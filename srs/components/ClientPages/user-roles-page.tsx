@@ -29,7 +29,7 @@ export default function UserRolesPageClient({pageTitle, slug, baseUrl, userRoles
                     async () => {
                         const res = await fetch(`${baseUrl}/api/${slug}`, {cache: "no-store"});
                         const fresh = await res.json();
-                        if (fresh?.branches) {
+                        if (fresh?.userRoles) {
                             window.location.reload();
                             return true;
                         }
