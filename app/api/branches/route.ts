@@ -3,24 +3,23 @@ import api from "@/srs/lib/apiClient/api";
 import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
 import {Branch_TypesInput, BranchesApiResponse} from "@/srs/types/branch-Types";
 import {branchSchema} from "@/srs/zodValidations/branchSchema";
+import {clientApi} from "@/srs/lib/apiClient/client";
 
 
 export async function GET() {
-    try {
-        const response = await api.get<BranchesApiResponse>('/Branches') 
-        return NextResponse.json(
-            {
-                success: true,
-                branches: response.data
-            }
-        )
-    } catch (err) {
-        console.error(`API error: ${err}`)
-        return NextResponse.json(
-            {success: false, error: String(err)}, 
-            {status: 500}
-        )
+
+    const response = await clientApi.branches.getAll()
+
+    if (!response.success) {
+        return NextResponse.json(response, {status: response.status ?? 500});
     }
+
+    return NextResponse.json(
+        {
+            success: true,
+            branches: response.data
+        }
+    )
 }
 
 export async function POST(req: Request) {
