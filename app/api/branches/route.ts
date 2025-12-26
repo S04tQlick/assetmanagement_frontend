@@ -1,23 +1,22 @@
 import {NextResponse} from "next/server";
-import api from "@/srs/lib/apiClient/api";
 import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
-import {Branch_TypesInput, BranchesApiResponse} from "@/srs/types/branch-Types";
+import {Branch_TypesInput} from "@/srs/types/branch-Types";
 import {branchSchema} from "@/srs/zodValidations/branchSchema";
 import {clientApi} from "@/srs/lib/apiClient/client";
 
 
 export async function GET() {
 
-    const response = await clientApi.branches.getAll()
+    const result = await clientApi.branches.getAll()
 
-    if (!response.success) {
-        return NextResponse.json(response, {status: response.status ?? 500});
+    if (!result.success) {
+        return NextResponse.json(result, {status: result.status ?? 500});
     }
 
     return NextResponse.json(
         {
             success: true,
-            branches: response.data
+            branches: result.data
         }
     )
 }
@@ -40,21 +39,20 @@ export async function POST(req: Request) {
         const doc = {
             ...data,
         }
-        
-        const result = await api.post(`/Branches`, doc)
+
+        const result = await clientApi.branches.create(doc)
 
         return NextResponse.json(
-            { 
-                success: true, 
-                data: result.data 
-            }, 
-            { status: 201 });
-        
+            {
+                success: true,
+                data: result
+            },
+            {status: 201});
     } catch (error: any) {
         const backendMessage = error.response?.data;
         return NextResponse.json(
             {
-                success: false, 
+                success: false,
                 error: backendMessage ?? "Unknown error"
             },
             {status: 400}
