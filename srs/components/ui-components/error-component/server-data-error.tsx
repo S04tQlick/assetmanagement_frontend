@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ModalHeader } from "@/srs/components/common/ModalHeader";
-import { ModalBody } from "@/srs/components/common/ModalBody";
-import { ModalFooter } from "@/srs/components/common/ModalFooter";
+import { ModalHeader } from "@/srs/components/common/modal-header";
+import { ModalBody } from "@/srs/components/common/modal-body";
+import { ModalFooter } from "@/srs/components/common/modal-footer";
 
 interface WarningModalProps {
     open: boolean;

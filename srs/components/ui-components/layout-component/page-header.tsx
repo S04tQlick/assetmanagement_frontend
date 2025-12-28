@@ -1,4 +1,4 @@
-import {Button} from "@/srs/components/common/Button";
+import {Button} from "@/srs/components/common/button";
 
 export const PageHeader =({title, onAdd}: { title: string; onAdd: () => void; })=> {
     return (

@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server'
-import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
+import { NextResponse } from 'next/server' 
 import { clientApi } from "@/srs/lib/apiClient/client";
-import {Branch_TypesInput} from "@/srs/types/branch-Types";
-import {branchSchema} from "@/srs/zodValidations/branchSchema";
+import {Branch_TypesInput} from "@/srs/types/branch.types";
+import { branchSchema } from "@/srs/schemas/branch.schema";
+import {formatZodErrors} from "@/srs/lib/zod";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {

@@ -1,13 +1,13 @@
 "use client"
 
 import React, { useState } from "react"
-import { Modal } from "@/srs/components/common/Modal"  
-import { ModalHeader } from "@/srs/components/common/ModalHeader"
-import { ModalBody } from "@/srs/components/common/ModalBody"
-import {ModalFooter} from "@/srs/components/common/ModalFooter"; 
-import {Button} from "@/srs/components/common/Button"; 
-import {UserRole_Types} from "@/srs/types/userRole-Types";
-import { UserRoleForm } from "../AuthForms/user-role-form"
+import { Modal } from "@/srs/components/common/modal"  
+import { ModalHeader } from "@/srs/components/common/modal-header"
+import { ModalBody } from "@/srs/components/common/modal-body"
+import {ModalFooter} from "@/srs/components/common/modal-footer"; 
+import {Button} from "@/srs/components/common/button"; 
+import {UserRole_Types} from "@/srs/types/user-role.types";
+import { UserRoleForm } from "@/srs/components/Forms/AuthForms/user-role-form"
 
 interface Props {
     pageTitle: string

@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react" 
-import { Modal } from "@/srs/components/common/Modal"
-import {InstitutionsList} from "@/srs/components/Forms/ListForms/InstitutionsList"; 
-import {Institution_Types} from "@/srs/types/institution-Types";
-import {InstitutionForm} from "@/srs/components/Forms/DataForms/InstitutionForm ";
+import { Modal } from "@/srs/components/common/modal"
+import {InstitutionsList} from "@/srs/components/Forms/ListForms/institutions-list"; 
+import {Institution_Types} from "@/srs/types/institution.types"; 
 import {ServerDataWarningModal} from "@/srs/components/ui-components/error-component/server-data-error"; 
 import {PageHeader} from "@/srs/components/ui-components/layout-component/page-header";
+import { InstitutionForm } from "../Forms/DataForms/institution-form ";
 
 interface ClientProps {
     institutions: Institution_Types[]

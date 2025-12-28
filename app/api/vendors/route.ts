@@ -1,17 +1,17 @@
+import { vendorSchema } from "@/srs/schemas/vendor.schema";
+import {Vendor_Types, VendorsApiResponse } from "@/srs/types/vendor.types";
 import {NextResponse} from "next/server";
-import api from "@/srs/lib/apiClient/api"; 
-import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
-import {Vendor_Types, VendorsApiResponse} from "@/srs/types/vendor-Types";
-import {vendorSchema} from "@/srs/zodValidations/vendorSchema";
+import {formatZodErrors} from "@/srs/lib/zod";
+import {clientApi} from "@/srs/lib/apiClient/client"; 
 
 
 export async function GET() {
     try {
-        const response = await api.get<VendorsApiResponse>('/Vendors')  
+        const response = await clientApi.vendors.getAll()  
         return NextResponse.json(
             {
                 success: true,
-                vendors: response.data
+                vendors: response
             }
         )
     } catch (err) {
@@ -42,11 +42,11 @@ export async function POST(req: Request) {
             ...data,
         } 
         
-        const result = await api.post(`/Vendors`, doc)
+        const result = await clientApi.vendors.create(doc)
         return NextResponse.json(
             { 
                 success: true, 
-                data: result.data 
+                data: result 
             }, 
             { status: 201 });
     } catch (error: any) {

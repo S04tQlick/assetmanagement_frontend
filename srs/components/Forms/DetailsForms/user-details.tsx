@@ -1,13 +1,13 @@
 "use client"
 
 import React, { useState } from "react"
-import { Modal } from "@/srs/components/common/Modal" 
-import { ModalHeader } from "@/srs/components/common/ModalHeader"
-import { ModalBody } from "@/srs/components/common/ModalBody"
-import {ModalFooter} from "@/srs/components/common/ModalFooter"; 
-import {Button} from "@/srs/components/common/Button"; 
-import { User_Types } from "@/srs/types/user-Types"
-import {UserForm} from "@/srs/components/Forms/DataForms/UserForm";
+import { Modal } from "@/srs/components/common/modal" 
+import { ModalHeader } from "@/srs/components/common/modal-header"
+import { ModalBody } from "@/srs/components/common/modal-body"
+import {ModalFooter} from "@/srs/components/common/modal-footer"; 
+import {Button} from "@/srs/components/common/button"; 
+import { User_Types } from "@/srs/types/user.types"
+import {UserForm} from "@/srs/components/Forms/DataForms/user-form"; 
 
 interface Props {
     pageTitle: string

@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react"; 
-import { Modal } from "@/srs/components/common/Modal"; 
+import { Modal } from "@/srs/components/common/modal"; 
 import { ServerDataWarningModal } from "@/srs/components/ui-components/error-component/server-data-error";
 import {PageHeader} from "@/srs/components/ui-components/layout-component/page-header"; 
-import { Branch_Types } from "@/srs/types/branch-Types";
-import {BranchesList} from "@/srs/components/Forms/ListForms/BranchesList";
-import { BranchForm } from "../Forms/DataForms/BranchForm";
+import { Branch_Types } from "@/srs/types/branch.types";
+import {BranchesList} from "@/srs/components/Forms/ListForms/branches-list";
+import {BranchForm} from "@/srs/components/Forms/DataForms/branch-form"; 
 
 interface ClientProps {
     branches: Branch_Types[];

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { AssetTypeForm } from "@/srs/components/Forms/DataForms/AssetTypeForm";
-import { Modal } from "@/srs/components/common/Modal";
-import { AssetTypesList } from "@/srs/components/Forms/ListForms/AssetTypesList";
-import { AssetType_Types } from "@/srs/types/assetType-Types";
+import { useState } from "react"; 
+import { Modal } from "@/srs/components/common/modal"; 
 import { ServerDataWarningModal } from "@/srs/components/ui-components/error-component/server-data-error";
-import {PageHeader} from "@/srs/components/ui-components/layout-component/page-header"; 
+import {PageHeader} from "@/srs/components/ui-components/layout-component/page-header";
+import {AssetTypeForm} from "@/srs/components/Forms/DataForms/asset-type-form";
+import { AssetType_Types } from "@/srs/types/asset-type.types";
+import { AssetTypesList } from "@/srs/components/Forms/ListForms/asset-types-list";
 
 interface ClientProps {
     assetTypes: AssetType_Types[];
@@ -15,7 +15,7 @@ interface ClientProps {
     slug: string;
 }
 
-export default function AssetTypesPageClient({pageTitle, slug, baseUrl, assetTypes}: ClientProps) {
+export default function AssetTypesClientPage({pageTitle, slug, baseUrl, assetTypes}: ClientProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     if (!assetTypes) { 

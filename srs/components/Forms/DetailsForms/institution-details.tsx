@@ -1,17 +1,13 @@
 "use client"
 
 import React, { useState } from "react"
-import { Modal } from "@/srs/components/common/Modal"
-import { InstitutionForm } from "@/srs/components/Forms/DataForms/InstitutionForm "
-import { Institution_Types } from "@/srs/types/institution-Types"
-import { ModalHeader } from "@/srs/components/common/ModalHeader"
-import { ModalBody } from "@/srs/components/common/ModalBody"
-import {ModalFooter} from "@/srs/components/common/ModalFooter";
-import {ModalTitle} from "@/srs/components/common/ModalTitle";
-import {InstitutionsFields} from "@/srs/components/Forms/FieldsForms/institution-fields";
-import {ImageUploader} from "@/srs/components/Forms/Uploads/ImageUploader";
-import {ErrorForm} from "@/srs/components/Forms/ErrorForms/FormError";
-import {Button} from "@/srs/components/common/Button";
+import { Modal } from "@/srs/components/common/modal" 
+import { Institution_Types } from "@/srs/types/institution.types"
+import { ModalHeader } from "@/srs/components/common/modal-header"
+import { ModalBody } from "@/srs/components/common/modal-body"
+import {ModalFooter} from "@/srs/components/common/modal-footer"; 
+import {Button} from "@/srs/components/common/button";
+import {InstitutionForm} from "@/srs/components/Forms/DataForms/institution-form ";
 
 interface Props {
     pageTitle: string

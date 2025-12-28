@@ -1,71 +1,48 @@
-import { NextResponse } from 'next/server'
-import api from "@/srs/lib/apiClient/api";
-import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
-import {User_Types, UsersApiResponse} from "@/srs/types/user-Types";
-import {userSchema} from "@/srs/zodValidations/userSchema";
+import {clientApi} from "@/srs/lib/apiClient/client"; 
+import { jsonError, jsonOk } from "@/srs/lib/apiClient/http-response";
+import {userUpdateSchema} from "@/srs/schemas/user.schema";
+import {formatZodErrors} from "@/srs/lib/zod";
 
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+type RouteParams = { params: Promise<{ id: string }>; };
+
+export async function GET(req: Request, { params }: RouteParams) {
+    const {id} = await params;
     try {
-        const { id } = await params
-        if (!id) return NextResponse.json(
-            { 
-                success: false, 
-                error: 'Missing user ID.' 
-            }, 
-            { status: 400 }
-        )
-
-        const response = await api.get<UsersApiResponse>(`/Users/${id}`)
-        if (!response) return NextResponse.json(
-            { 
-                success: false, 
-                error: 'User not found.' 
-            }, 
-            { status: 404 }
-        )
-
-        return NextResponse.json(
-            {
-                success: true,
-                user: response.data
-            }, 
-            { status: 200 }
-        )
-    } catch (error) {
-        console.error(`GET user error: ${error}`)
-        return NextResponse.json(
-            { 
-                success: false, 
-                error: 'Internal server error.' 
-            }, 
-            { status: 500 }
-        )
+        const user = await clientApi.users.getById(id);
+        if (!user) {
+            return jsonError("User not found", 404);
+        }
+        return jsonOk(user, "User retrieved");
+    } catch (error) { 
+        console.error(`GET /api/users/${id} error:`, error);
+        return jsonError("Failed to fetch user", 500);
     }
 }
 
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: Request, { params }: RouteParams) {
+    const {id} = await params;
     try {
-        const { id } = await params
-        const body = await req.json() as User_Types
-        const parsed = userSchema.safeParse({ mode: "update", ...body })
+
+        const body = await req.json();
+
+        const parsed = userUpdateSchema.safeParse(body);
 
         if (!parsed.success) {
-            const errors = formatZodErrors(parsed.error)
-            return NextResponse.json({ success: false, errors }, { status: 400 })
+            const errors = formatZodErrors(parsed.error);
+            return jsonError("Validation failed", 400, {errors});
         }
 
-        const data = parsed.data  
-
+        const data = parsed.data;
         const doc = {
             id,
             ...data,
-        }
-        
-        const result = await api.put(`/Users/${id}`, doc)
+        };
 
-        return NextResponse.json({ success: true, data: result.data }, { status: 200 });
+        const result = await clientApi.users.update(id, doc);
+
+        return jsonOk(result, "User updated", 200);
     } catch (error) {
-        console.error(`PUT /api/users/[id] error: ${error}`)
-        return NextResponse.json({ success: false, error: 'Failed to update user.' }, { status: 500 })
+        console.error(`PUT /api/users/[id] error:`, error);
+        return jsonError("Failed to update user.", 500);
     }
 }

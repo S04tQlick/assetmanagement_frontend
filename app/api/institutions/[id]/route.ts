@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
-import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
-import { clientApi } from "@/srs/lib/apiClient/client";
-import {Institution_TypesInput} from "@/srs/types/institution-Types";
-import {institutionSchema} from "@/srs/zodValidations/institutionSchema";
+import {clientApi} from "@/srs/lib/apiClient/client";
+import { formatZodErrors } from "@/srs/lib/zod";
+import { institutionSchema } from "@/srs/schemas/institution.schema";
+import {Institution_TypesInput} from "@/srs/types/institution.types"; 
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {

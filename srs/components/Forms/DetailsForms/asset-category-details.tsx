@@ -1,15 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Modal } from "@/srs/components/common/Modal"
-import { AssetTypeForm } from "@/srs/components/Forms/DataForms/AssetTypeForm"
-import { AssetType_Types } from "@/srs/types/assetType-Types"
-import { ModalHeader } from "@/srs/components/common/ModalHeader"
-import { ModalBody } from "@/srs/components/common/ModalBody"
-import {ModalFooter} from "@/srs/components/common/ModalFooter";
-import {Button} from "@/srs/components/common/Button";
-import {AssetCategory_Types} from "@/srs/types/assetCategory-Types";
-import {AssetCategoryForm} from "@/srs/components/Forms/DataForms/AssetCategoryForm";
+import { Modal } from "@/srs/components/common/modal" 
+import { ModalHeader } from "@/srs/components/common/modal-header"
+import { ModalBody } from "@/srs/components/common/modal-body"
+import {ModalFooter} from "@/srs/components/common/modal-footer";
+import {Button} from "@/srs/components/common/button";
+import {AssetCategory_Types} from "@/srs/types/asset-category.types";
+import {AssetCategoryForm} from "@/srs/components/Forms/DataForms/asset-category-form"; 
 
 interface Props {
     pageTitle: string

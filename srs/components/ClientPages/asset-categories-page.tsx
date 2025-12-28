@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { AssetCategoryForm } from "@/srs/components/Forms/DataForms/AssetCategoryForm";
-import { Modal } from "@/srs/components/common/Modal";
-import { AssetCategoriesList } from "@/srs/components/Forms/ListForms/AssetCategoriesList";
 import { ServerDataWarningModal } from "@/srs/components/ui-components/error-component/server-data-error";
 import {PageHeader} from "@/srs/components/ui-components/layout-component/page-header";
-import {AssetCategory_Types} from "@/srs/types/assetCategory-Types";
+import {AssetCategoryForm} from "@/srs/components/Forms/DataForms/asset-category-form";
+import {AssetCategory_Types} from "@/srs/types/asset-category.types";
+import { AssetCategoriesList } from "@/srs/components/Forms/ListForms/asset-categories-list";
+import {Modal} from "@/srs/components/common/modal";
 
 interface ClientProps {
     assetCategories: AssetCategory_Types[];

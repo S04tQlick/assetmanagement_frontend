@@ -1,8 +1,8 @@
-import {NextResponse} from "next/server";
-import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
+import {NextResponse} from "next/server"; 
 import {clientApi} from "@/srs/lib/apiClient/client";
-import {assetCategorySchema} from "@/srs/zodValidations/assetCategorySchema";
-import {AssetCategory_Types} from "@/srs/types/assetCategory-Types";
+import { formatZodErrors } from "@/srs/lib/zod";
+import { assetCategorySchema } from "@/srs/schemas/asset-category.schema";
+import {AssetCategory_Types} from "@/srs/types/asset-category.types";
 
 
 export async function GET() {

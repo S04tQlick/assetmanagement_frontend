@@ -1,8 +1,8 @@
-import {NextResponse} from "next/server";
-import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
-import {Branch_TypesInput} from "@/srs/types/branch-Types";
-import {branchSchema} from "@/srs/zodValidations/branchSchema";
+import {NextResponse} from "next/server"; 
 import {clientApi} from "@/srs/lib/apiClient/client";
+import { formatZodErrors } from "@/srs/lib/zod";
+import { branchSchema } from "@/srs/schemas/branch.schema";
+import {Branch_TypesInput} from "@/srs/types/branch.types";
 
 
 export async function GET() {

@@ -1,60 +1,96 @@
-import {NextResponse} from "next/server";
-import api from "@/srs/lib/apiClient/api"; 
-import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
-import { User_Types, UsersApiResponse } from "@/srs/types/user-Types";
-import { userSchema } from "@/srs/zodValidations/userSchema";
-
+import {clientApi} from "@/srs/lib/apiClient/client";
+import {jsonError, jsonOk } from "@/srs/lib/apiClient/http-response";
+import { userCreateSchema } from "@/srs/schemas/user.schema";
+import {formatZodErrors} from "@/srs/lib/zod";
 
 export async function GET() {
-    try {
-        const response = await api.get<UsersApiResponse>('/Users')  
-        return NextResponse.json(
-            {
-                success: true,
-                users: response.data
-            }
-        )
-    } catch (err) {
-        console.error(`API error: ${err}`)
-        return NextResponse.json(
-            {success: false, error: String(err)}, 
-            {status: 500}
+    const result = await clientApi.users.getAll()
+
+    if (!result.success) {
+        return jsonError(
+            result.error ?? "Failed to fetch users",
+            result.status ?? 500
         )
     }
+
+    return jsonOk({
+        users: result.data, 
+        status: 200, 
+        message: "Users retrieved"
+    })
 }
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json() as User_Types
-        const parsed = userSchema.safeParse(body)
+        const json = await req.json();
+
+        const parsed = userCreateSchema.safeParse(json);
+
         if (!parsed.success) {
-            const errors = formatZodErrors(parsed.error)
-            return NextResponse.json(
-                {success: false, errors},
-                {status: 400}
-            )
+            const errors = formatZodErrors(parsed.error);
+            return jsonError("Validation failed", 400, {errors});
         }
 
-        const data = parsed.data
+        const data = parsed.data;
+
+        if (data.passwordHash !== data.confirmPassword) {
+            return jsonError("Passwords do not match", 400);
+        }
 
         const doc = {
             ...data,
-        }
-        const result = await api.post(`/Users`, doc)
-        return NextResponse.json(
-            {
-                success: true,
-                data: result.data
-            },
-            {status: 201});
-    } catch (error: any) {
-        const backendMessage = error.response?.data;
-        return NextResponse.json(
-            {
-                success: false,
-                error: backendMessage ?? "Unknown error"
-            },
-            {status: 400}
-        );
+        };
+
+        const result = await clientApi.users.create(doc);
+ 
+        return jsonOk({
+            users: result, 
+            status: 201,
+            message: "User created"
+        })
+
+    } catch (error) {
+        console.error(`POST /api/users error:`, error);
+        return jsonError("Failed to create user.", 500);
     }
 }
+    
+
+// export async function POST(req: Request) {
+//     try {
+//         const body = await req.json() as User_Types
+//         const parsed = userSchema.safeParse(body)
+//
+//         if (!parsed.success) {
+//             const errors = formatZodErrors(parsed.error)
+//             return NextResponse.json(
+//                 {success: false, errors},
+//                 {status: 400}
+//             )
+//         }
+//
+//         const data = parsed.data
+//
+//         const doc = {
+//             ...data,
+//         }
+//
+//         const result = await clientApi.users.create(doc)
+//
+//         return NextResponse.json(
+//             {
+//                 success: true,
+//                 data: result
+//             },
+//             {status: 201});
+//     } catch (error: any) {
+//         const backendMessage = error.response?.data;
+//         return NextResponse.json(
+//             {
+//                 success: false,
+//                 error: backendMessage ?? "Unknown error"
+//             },
+//             {status: 400}
+//         );
+//     }
+// }

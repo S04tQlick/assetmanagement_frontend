@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
-import api from "@/srs/lib/apiClient/api"; 
-import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
-import {Vendor_Types, Vendor_TypesInput, VendorsApiResponse} from "@/srs/types/vendor-Types";
-import { vendorSchema } from "@/srs/zodValidations/vendorSchema";
+import {clientApi} from "@/srs/lib/apiClient/client";
+import { Vendor_TypesInput } from "@/srs/types/vendor.types";
+import { vendorSchema } from "@/srs/schemas/vendor.schema";
+import { formatZodErrors } from "@/srs/lib/zod";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -15,7 +15,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             { status: 400 }
         )
 
-        const response = await api.get<VendorsApiResponse>(`/Vendors/${id}`)
+        const response = await clientApi.vendors.getById(id)
         
         if (!response) return NextResponse.json(
             { 
@@ -28,7 +28,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         return NextResponse.json(
             {
                 success: true,
-                vendor: response.data
+                vendor: response
             }, 
             { status: 200 }
         )
@@ -62,9 +62,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
             ...data,
         }
         
-        const result = await api.put(`/Vendors/${id}`, doc)
+        const result = await clientApi.vendors.update(id, doc)
 
-        return NextResponse.json({ success: true, data: result.data }, { status: 200 });
+        return NextResponse.json({ success: true, data: result }, { status: 200 });
     } catch (error) {
         console.error(`PUT /api/vendors/[id] error: ${error}`)
         return NextResponse.json({ success: false, error: 'Failed to update asset category.' }, { status: 500 })

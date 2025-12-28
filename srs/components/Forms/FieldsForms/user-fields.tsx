@@ -1,6 +1,4 @@
-'use client'
-
-import { Input } from "@/srs/components/common/Input"
+import { Input } from "@/srs/components/common/input"
 import React from "react";
 
 interface Props {

@@ -1,14 +1,14 @@
 "use client"
 
 import React, { useState } from "react"
-import { Modal } from "@/srs/components/common/Modal"
-import { BranchForm } from "@/srs/components/Forms/DataForms/BranchForm"
-import { Branch_Types } from "@/srs/types/branch-Types"
-import { ModalHeader } from "@/srs/components/common/ModalHeader"
-import { ModalBody } from "@/srs/components/common/ModalBody"
-import {ModalFooter} from "@/srs/components/common/ModalFooter"; 
-import {Button} from "@/srs/components/common/Button";
-import DynamicGeolocationPicker from "@/srs/components/Maps/DynamicGeolocationPicker";
+import { Modal } from "@/srs/components/common/modal" 
+import { Branch_Types } from "@/srs/types/branch.types"
+import { ModalHeader } from "@/srs/components/common/modal-header"
+import { ModalBody } from "@/srs/components/common/modal-body"
+import {ModalFooter} from "@/srs/components/common/modal-footer"; 
+import {Button} from "@/srs/components/common/button";
+import DynamicGeolocationPicker from "@/srs/components/Maps/dynamic-geolocation-picker";
+import {BranchForm} from "@/srs/components/Forms/DataForms/branch-form";
 
 interface Props {
     pageTitle: string
