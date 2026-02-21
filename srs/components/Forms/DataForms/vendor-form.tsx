@@ -1,135 +1,307 @@
 'use client'
 
-import {useState, FormEvent, useEffect} from 'react'
-import { useRouter } from 'next/navigation' 
+import React, { FormEvent, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useToastError } from "@/srs/hooks/use-toast-error"
+import { useToastSuccess } from "@/srs/hooks/use-toast-success"
+import { useZodForm } from "@/srs/hooks/use-zod-form"
+import { useDropdowns } from "@/srs/hooks/use-dropdowns"
+import { useCrudForm } from "@/srs/hooks/use-crud-form"
+import { ModalHeader } from "@/srs/components/common/modal-header"
+import { ModalBody } from "@/srs/components/common/modal-body"
+import { ModalFooter } from "@/srs/components/common/modal-footer"
+import { ModalTitle } from "@/srs/components/common/modal-title"
+import { Button } from "@/srs/components/common/button"
+import { ErrorForm } from "@/srs/components/Forms/ErrorForms/form-error"
+import { Dropdown } from "@/srs/components/common/dropdown"
 import {Institution_Types} from "@/srs/types/institution.types";
-import {ErrorForm} from "@/srs/components/Forms/ErrorForms/form-error";
-import { Vendor_Types, Vendor_TypesInput } from "@/srs/types/vendor.types";
+import {Vendor_Types} from "@/srs/types/vendor.types";
+import {vendorSchema} from "@/srs/schemas/vendor.schema";
 import {VendorsFields} from "@/srs/components/Forms/FieldsForms/vendors-fields";
-import {Dropdown} from "@/srs/components/common/dropdown";
 
 interface Props {
     pageTitle: string
     slug: string
     initialData?: Vendor_Types
+    onSuccess?: () => void
 }
 
-export const VendorForm = ({ pageTitle, slug, initialData }: Props) => {
+export const VendorForm = ({ pageTitle, slug, initialData, onSuccess }: Props) => {
     const router = useRouter()
-    const isEdit = !!initialData?.id
+    const isEdit = Boolean(initialData?.id)
+    const {showError} = useToastError()
+    const {showSuccess} = useToastSuccess()
 
-    const [form, setForm] = useState<Vendor_TypesInput>({
+    const {
+        form,
+        errors,
+        formError,
+        setFormError,
+        updateField,
+        validateForm,
+    } = useZodForm(vendorSchema, {
         vendorsName: initialData?.vendorsName || '',
         emailAddress: initialData?.emailAddress || '',
         contactInfo: initialData?.contactInfo || '', 
-        institutionId: initialData?.institutionId || '',
+        institutionId: initialData?.institutions.id || '',
     })
 
-    const [institutions, setInstitutions] = useState<Institution_Types[]>([])
-
-    const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
+    const {data: dropdowns, loading: dropdownLoading, error} = useDropdowns(
+        ["institutions"],
+        (data) => ({
+            institutions: data[0].institutions ?? [],
+        })
+    )
 
     useEffect(() => {
-        const fetchOptions = async () => {
-            try {
-                const [instRes] = await Promise.all([
-                    fetch(`/api/institutions`), 
-                ])
+        if (error) setFormError(error)
+    }, [error])
 
-                const [instData] = await Promise.all([
-                    instRes.json(), 
-                ])
+    const requiredFields = [
+        form.vendorsName,
+        form.emailAddress,
+        form.contactInfo,
+        form.institutionId,
+    ]
+    const isFormIncomplete = requiredFields.some(v => !v.trim())
 
-                if (instData.success) setInstitutions(instData.institutions)
-            } catch (err) {
-                console.error('Dropdown fetch error:', err)
-            }
-        }
-
-        fetchOptions()
-    }, [])
-
-
-    const updateField = <K extends keyof Vendor_TypesInput>(
-        field: K, value: Vendor_TypesInput[K]) => {
-        setForm((prev) => ({...prev, [field]: value}))
-    }
+    const {loading, submitForm} = useCrudForm({
+        showError,
+        showSuccess,
+        onSuccess,
+        router,
+        slug,
+        isEdit,
+    })
 
     const handleSubmit = async (e: FormEvent) => {
-        
         e.preventDefault()
-        setError(null)
-        setLoading(true)
+        setFormError(null)
 
-        const payload = {
-            ...form
-        }
+        const payload = validateForm()
+        if (!payload) return
 
-        const url = isEdit
-            ? `/api/${slug}/${initialData.id}`
-            : `/api/${slug}`
-
-        const method = isEdit ? 'PUT' : 'POST'
-
-        try {
-            const res = await fetch(url, {
-                method,
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(payload),
-            })
-
-            const data = await res.json()
-
-            if (!data.success) {
-                setError(data.error || 'Failed to save asset type.')
-                setLoading(false)
-                return
-            }
-
-            router.push(`/${slug}`)
-        } catch (err) {
-            //console.error('Save error:', err)
-            console.error(`${pageTitle} save failed:`, err, payload)
-            setError('Something went wrong. Please try again.')
-            //setError(err.response?.data?.error ?? "Unexpected error.");
-        } finally {
-            setLoading(false)
-        }
+        await submitForm(payload, initialData?.id)
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
-            <VendorsFields
-                vendorsName={form.vendorsName}
-                emailAddress={form.emailAddress}
-                contactInfo={form.contactInfo}
-                onChange={(field, value) => updateField(field, value)}
-                error={error}
-            />
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+            <ModalHeader>
+                <ModalTitle isEdit={isEdit} pageTitle={pageTitle}/>
+            </ModalHeader>
 
-            <Dropdown
-                label="Institution"
-                value={form.institutionId}
-                options={institutions}
-                optionLabel={(t) => t.institutionName}
-                optionValue={(t) => t.id}
-                onChange={(val) => updateField('institutionId', val)}
-                required
-            /> 
+            <ModalBody>
+                <VendorsFields
+                    {...form}
+                    onChange={updateField}
+                    errors={errors}
+                />
 
-            {error &&  <ErrorForm message={error} /> }
-            
-            <button
-                type="submit"
-                disabled={loading}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-                {loading ? 'Saving...' : initialData?.id ? `Update ${pageTitle}` : `Create ${pageTitle}`}
-            </button>
+                <Dropdown<Institution_Types>
+                    label="Institution"
+                    value={form.institutionId}
+                    options={dropdowns?.institutions ?? []}
+                    optionLabel={(v) => v.institutionName}
+                    optionValue={(v) => v.id ?? ""}
+                    onChange={(val) => updateField("institutionId", val)}
+                    required
+                    error={errors.institutionId}
+                /> 
+
+                {formError && <ErrorForm message={formError}/>}
+            </ModalBody>
+
+            <ModalFooter>
+                <Button
+                    type="submit"
+                    loading={loading}
+                    isDisabled={dropdownLoading || isFormIncomplete}
+                    isEdit={isEdit}
+                    pageTitle={pageTitle}
+                />
+            </ModalFooter>
         </form>
     )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 'use client'
+//
+// import {useState, FormEvent, useEffect} from 'react'
+// import { useRouter } from 'next/navigation' 
+// import {Institution_Types} from "@/srs/types/institution.types";
+// import {ErrorForm} from "@/srs/components/Forms/ErrorForms/form-error";
+// import { Vendor_Types, Vendor_TypesInput } from "@/srs/types/vendor.types";
+// import {VendorsFields} from "@/srs/components/Forms/FieldsForms/vendors-fields";
+// import {Dropdown} from "@/srs/components/common/dropdown";
+//
+// interface Props {
+//     pageTitle: string
+//     slug: string
+//     initialData?: Vendor_Types
+// }
+//
+// export const VendorForm = ({ pageTitle, slug, initialData }: Props) => {
+//     const router = useRouter()
+//     const isEdit = !!initialData?.id
+//
+//     const [form, setForm] = useState<Vendor_TypesInput>({
+//         vendorsName: initialData?.vendorsName || '',
+//         emailAddress: initialData?.emailAddress || '',
+//         contactInfo: initialData?.contactInfo || '', 
+//         institutionId: initialData?.institutionId || '',
+//     })
+//
+//     const [institutions, setInstitutions] = useState<Institution_Types[]>([])
+//
+//     const [error, setError] = useState<string | null>(null)
+//     const [loading, setLoading] = useState(false)
+//
+//     useEffect(() => {
+//         const fetchOptions = async () => {
+//             try {
+//                 const [instRes] = await Promise.all([
+//                     fetch(`/api/institutions`), 
+//                 ])
+//
+//                 const [instData] = await Promise.all([
+//                     instRes.json(), 
+//                 ])
+//
+//                 if (instData.success) setInstitutions(instData.institutions)
+//             } catch (err) {
+//                 console.error('Dropdown fetch error:', err)
+//             }
+//         }
+//
+//         fetchOptions()
+//     }, [])
+//
+//
+//     const updateField = <K extends keyof Vendor_TypesInput>(
+//         field: K, value: Vendor_TypesInput[K]) => {
+//         setForm((prev) => ({...prev, [field]: value}))
+//     }
+//
+//     const handleSubmit = async (e: FormEvent) => {
+//        
+//         e.preventDefault()
+//         setError(null)
+//         setLoading(true)
+//
+//         const payload = {
+//             ...form
+//         }
+//
+//         const url = isEdit
+//             ? `/api/${slug}/${initialData.id}`
+//             : `/api/${slug}`
+//
+//         const method = isEdit ? 'PUT' : 'POST'
+//
+//         try {
+//             const res = await fetch(url, {
+//                 method,
+//                 headers: {'Content-Type': 'application/json'},
+//                 body: JSON.stringify(payload),
+//             })
+//
+//             const data = await res.json()
+//
+//             if (!data.success) {
+//                 setError(data.error || 'Failed to save asset type.')
+//                 setLoading(false)
+//                 return
+//             }
+//
+//             router.push(`/${slug}`)
+//         } catch (err) {
+//             //console.error('Save error:', err)
+//             console.error(`${pageTitle} save failed:`, err, payload)
+//             setError('Something went wrong. Please try again.')
+//             //setError(err.response?.data?.error ?? "Unexpected error.");
+//         } finally {
+//             setLoading(false)
+//         }
+//     }
+//
+//     return (
+//         <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
+//             <VendorsFields
+//                 vendorsName={form.vendorsName}
+//                 emailAddress={form.emailAddress}
+//                 contactInfo={form.contactInfo}
+//                 onChange={(field, value) => updateField(field, value)}
+//                 error={error}
+//             />
+//
+//             <Dropdown
+//                 label="Institution"
+//                 value={form.institutionId}
+//                 options={institutions}
+//                 optionLabel={(t) => t.institutionName}
+//                 optionValue={(t) => t.id}
+//                 onChange={(val) => updateField('institutionId', val)}
+//                 required
+//             /> 
+//
+//             {error &&  <ErrorForm message={error} /> }
+//            
+//             <button
+//                 type="submit"
+//                 disabled={loading}
+//                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+//             >
+//                 {loading ? 'Saving...' : initialData?.id ? `Update ${pageTitle}` : `Create ${pageTitle}`}
+//             </button>
+//         </form>
+//     )
+// }
 
 
 
