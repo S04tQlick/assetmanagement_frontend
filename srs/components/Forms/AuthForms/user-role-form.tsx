@@ -2,19 +2,19 @@
 
 import {useState, FormEvent, useEffect} from 'react'
 import { useRouter } from 'next/navigation' 
-import {ErrorForm} from "@/srs/components/Forms/ErrorForms/FormError";
-import {UserRole_Types} from "@/srs/types/userRole-Types";
-import { User_Types } from "@/srs/types/user-Types";
-import { Role_Types } from "@/srs/types/role-Types";
-import {useToastError} from "@/srs/hooks/useToastError";
-import {useZodForm} from "@/srs/hooks/useZodForm";
-import {userRoleSchema} from "@/srs/zodValidations/userRoleSchema";
-import {ModalHeader} from "@/srs/components/common/ModalHeader";
-import {ModalTitle} from "@/srs/components/common/ModalTitle";
-import { ModalBody } from "../../common/ModalBody";
-import {ModalFooter} from "@/srs/components/common/ModalFooter";
-import {Button} from "@/srs/components/common/Button";
-import {Dropdown} from "@/srs/components/common/Dropdown";
+import {ErrorForm} from "@/srs/components/Forms/ErrorForms/form-error";
+import {UserRole_Types} from "@/srs/types/user-role.types";
+import { User_Types } from "@/srs/types/user.types";
+import { Role_Types } from "@/srs/types/role.types";
+import {useToastError} from "@/srs/hooks/use-toast-error";
+import {useZodForm} from "@/srs/hooks/use-zod-form";
+import {ModalHeader} from "@/srs/components/common/modal-header";
+import {ModalTitle} from "@/srs/components/common/modal-title";
+import { ModalBody } from "@/srs/components/common/modal-body";
+import {ModalFooter} from "@/srs/components/common/modal-footer";
+import {Button} from "@/srs/components/common/button";
+import {Dropdown} from "@/srs/components/common/dropdown";
+import {userRoleSchema} from "@/srs/schemas/user-role.schema";
 
 interface Props {
     pageTitle: string

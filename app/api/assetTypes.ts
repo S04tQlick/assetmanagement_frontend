@@ -1,5 +1,5 @@
-import { httpClient } from "@/srs/lib/apiClient/httpClient";
-import {AssetType_TypesInput, AssetTypesApiResponse} from "@/srs/types/assetType-Types";
+import { httpClient } from "@/srs/lib/apiClient/http-client";
+import {AssetType_TypesInput, AssetTypesApiResponse} from "@/srs/types/asset-type.types";
 
 export const assetTypesApi = {
     getAll: () =>

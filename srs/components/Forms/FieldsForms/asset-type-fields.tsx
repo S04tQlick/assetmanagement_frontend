@@ -1,5 +1,5 @@
-import {Input} from "@/srs/components/common/Input";
-import { Textarea } from "@/srs/components/common/Textarea";
+import {Input} from "@/srs/components/common/input";
+import { Textarea } from "@/srs/components/common/textarea";
 
 interface Props {
     assetTypeName: string

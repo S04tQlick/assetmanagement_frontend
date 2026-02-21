@@ -1,13 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { Modal } from "@/srs/components/common/Modal"
-import { AssetTypeForm } from "@/srs/components/Forms/DataForms/AssetTypeForm"
-import { AssetType_Types } from "@/srs/types/assetType-Types"
-import { ModalHeader } from "@/srs/components/common/ModalHeader"
-import { ModalBody } from "@/srs/components/common/ModalBody"
-import {ModalFooter} from "@/srs/components/common/ModalFooter";
-import {Button} from "@/srs/components/common/Button";
+import { Modal } from "@/srs/components/common/modal" 
+import { AssetType_Types } from "@/srs/types/asset-type.types"
+import { ModalHeader } from "@/srs/components/common/modal-header"
+import { ModalBody } from "@/srs/components/common/modal-body"
+import {ModalFooter} from "@/srs/components/common/modal-footer";
+import {Button} from "@/srs/components/common/button";
+import {AssetTypeForm} from "@/srs/components/Forms/DataForms/asset-type-form";
+import {DeleteModal} from "@/srs/components/ui-components/modal-component/delete-modal";
 
 interface Props {
     pageTitle: string
@@ -18,6 +19,7 @@ interface Props {
 
 export default function AssetTypeDetailClient({ pageTitle, slug, assetType, onClose }: Props) {
     const [editOpen, setEditOpen] = useState(false)
+    const [deleteOpen, setDeleteOpen] = useState(false)
 
     return (
         <>
@@ -43,12 +45,13 @@ export default function AssetTypeDetailClient({ pageTitle, slug, assetType, onCl
                         >
                             Edit
                         </Button>
+
                         <Button
-                            onClick={onClose}
-                            variant={"secondary"}
+                            onClick={() => setDeleteOpen(true)}
+                            variant={"danger"}
                         >
-                            Close
-                        </Button>
+                            Delete
+                        </Button> 
                     </div>
                 </ModalFooter>
             </div>
@@ -61,6 +64,19 @@ export default function AssetTypeDetailClient({ pageTitle, slug, assetType, onCl
                     onSuccess={() => {
                         setEditOpen(false)
                         onClose()
+                    }}
+                />
+            </Modal>
+
+            <Modal open={deleteOpen} onClose={() => setDeleteOpen(false)} size={"sm"}>
+                <DeleteModal
+                    pageTitle={pageTitle}
+                    slug={slug}
+                    id={assetType.id}
+                    recordName={assetType.assetTypeName}  
+                    onSuccess={() => {
+                        setDeleteOpen(false)
+                        onClose() 
                     }}
                 />
             </Modal>

@@ -1,15 +1,16 @@
-import {NextResponse} from "next/server";
-import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
+import {NextResponse} from "next/server"; 
 import {clientApi} from "@/srs/lib/apiClient/client";
-import {assetCategorySchema} from "@/srs/zodValidations/assetCategorySchema";
-import {AssetCategory_Types} from "@/srs/types/assetCategory-Types";
-
+import { formatZodErrors } from "@/srs/lib/zod";
+import { assetCategorySchema } from "@/srs/schemas/asset-category.schema";
+import {AssetCategoriesApiResponse} from "@/srs/types/asset-category.types";
 
 export async function GET() {
     const result = await clientApi.assetCategories.getAll()
 
     if (!result.success) {
-        return NextResponse.json(result, { status: result.status ?? 500 })
+        return NextResponse.json(result, { 
+            status: result.status ?? 500 
+        })
     }
 
     return NextResponse.json({
@@ -20,7 +21,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json() as AssetCategory_Types
+        const body = await req.json() as AssetCategoriesApiResponse
         const parsed = assetCategorySchema.safeParse(body)
 
         if (!parsed.success) {

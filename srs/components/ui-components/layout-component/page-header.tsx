@@ -1,4 +1,5 @@
-import {Button} from "@/srs/components/common/Button";
+import {Button} from "@/srs/components/common/button";
+import React from "react";
 
 export const PageHeader =({title, onAdd}: { title: string; onAdd: () => void; })=> {
     return (
@@ -15,3 +16,14 @@ export const PageHeader =({title, onAdd}: { title: string; onAdd: () => void; })
         </div>
     );
 }
+
+
+
+
+
+
+
+
+// <div className="bg-gray-100 py-2 px-4">
+//     <h2 className="text-xl font-semibold text-gray-800">Top Users</h2>
+// </div>

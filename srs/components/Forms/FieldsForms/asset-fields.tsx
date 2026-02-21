@@ -1,4 +1,4 @@
-import { Input } from "../../common/Input"
+import { Input } from "@/srs/components/common/input"
 
 interface Props {
     assetName: string

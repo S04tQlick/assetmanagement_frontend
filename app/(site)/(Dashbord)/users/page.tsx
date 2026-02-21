@@ -9,7 +9,7 @@ export default async function UsersPage() {
     const baseUrl = await getSiteOrigin()
     const res = await fetch(`${baseUrl}/api/${slug}`, { cache: "no-store" })
     const data = await res.json()
-
+    
     return (
         <UsersPageClient
             users={data.users}

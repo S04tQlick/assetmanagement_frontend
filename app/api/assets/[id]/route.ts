@@ -1,72 +1,64 @@
-import { NextResponse } from 'next/server'
-import api from "@/srs/lib/apiClient/api";
-import {Asset_Types, AssetsApiResponse} from "@/srs/types/asset-Types";
-import {assetSchema} from "@/srs/zodValidations/assetSchema";
-import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
+import {clientApi} from "@/srs/lib/apiClient/client";
+import {jsonError, jsonOk} from "@/srs/lib/apiClient/http-response";
+import { assetSchema } from "@/srs/schemas/asset.schema";
+import { formatZodErrors } from "@/srs/lib/zod";
+import {AssetsApiResponse} from "@/srs/types/asset.types";
 
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+type RouteParams = { params: Promise<{ id: string }>; };
+
+export async function GET(req: Request, { params }: RouteParams) {
+    const {id} = await params;
     try {
-        const { id } = await params
-        if (!id) return NextResponse.json(
-            { 
-                success: false, 
-                error: 'Missing asset ID.' 
-            }, 
-            { status: 400 }
-        )
-
-        const response = await api.get<AssetsApiResponse>(`/Assets/${id}`)
-        
-        if (!response) return NextResponse.json(
-            { 
-                success: false, 
-                error: 'Asset not found.' 
-            }, 
-            { status: 404 }
-        )
-
-        return NextResponse.json(
-            {
-                success: true, 
-                asset: response.data
-            }, 
-            { status: 200 }
-        )
+        const asset = await clientApi.assets.getById(id);
+        if (!asset) {
+            return jsonError("Asset not found", 404);
+        }
+        return jsonOk(asset, "Asset retrieved");
     } catch (error) {
-        console.error(`GET asset error: ${error}`)
-        return NextResponse.json(
-            { 
-                success: false, 
-                error: 'Internal server error.' 
-            }, 
-            { status: 500 }
-        )
+        console.error(`GET /api/assets/${id} error:`, error);
+        return jsonError("Failed to fetch asset", 500);
     }
 }
 
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: Request, { params }: RouteParams) {
+    const {id} = await params;
     try {
-        const { id } = await params
-        const body = await req.json() as Asset_Types
-        const parsed = assetSchema.safeParse(body)
-        
+        const body = await req.json() as AssetsApiResponse;
+        const parsed = assetSchema.safeParse(body);
+
         if (!parsed.success) {
-            const errors = formatZodErrors(parsed.error)
-            return NextResponse.json({ success: false, errors }, { status: 400 })
+            const errors = formatZodErrors(parsed.error);
+            return jsonError("Validation failed", 400, {errors});
         }
 
-        const data = parsed.data
-
-        const doc = {
-            id,
-            ...data,
-        }
+        const data = parsed.data;
         
-        const result = await api.put(`/Assets/${id}`, doc)
+        const doc = {
+            ...data,
+        };
 
-        return NextResponse.json({ success: true, data: result.data }, { status: 200 });
+        const result = await clientApi.assets.update(id, doc);
+
+        return jsonOk(result, "Asset updated", 200);
     } catch (error) {
-        console.error(`PUT /api/assets/[id] error: ${error}`)
-        return NextResponse.json({ success: false, error: 'Failed to update asset.' }, { status: 500 })
+        console.error(`PUT /api/assets/[id] error:`, error);
+        return jsonError("Failed to update asset.", 500);
+    }
+}
+
+export async function DELETE(req: Request, { params }: RouteParams) {
+    const {id} = await params;
+
+    try {
+        const result = await clientApi.assets.delete(id);
+
+        if (!result.success) {
+            return jsonError(result.error ?? "Failed to delete record", result.status ?? 500);
+        }
+
+        return jsonOk(null, "Asset deleted", 200);
+    } catch (error) {
+        console.error(`DELETE /api/assets/${id} error:`, error);
+        return jsonError("Unexpected server error", 500);
     }
 }

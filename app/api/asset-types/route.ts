@@ -1,9 +1,9 @@
-import {AssetType_Types} from "@/srs/types/assetType-Types";
-import {NextResponse} from "next/server";
-import {assetTypeSchema} from "@/srs/zodValidations/assetTypeSchema";
-import {formatZodErrors} from "@/srs/zodValidations/formatZodErrors";
+import {NextResponse} from "next/server"; 
 import {clientApi} from "@/srs/lib/apiClient/client";
-
+import {assetTypeSchema} from "@/srs/schemas/asset-type.schema";
+import {formatZodErrors} from "@/srs/lib/zod";
+import {jsonError, jsonOk} from "@/srs/lib/apiClient/http-response";
+import {AssetTypesApiResponse} from "@/srs/types/asset-type.types";
 
 export async function GET() {
     const result = await clientApi.assetTypes.getAll()
@@ -20,15 +20,12 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json() as AssetType_Types
-        const parsed = assetTypeSchema.safeParse(body)
+        const json = await req.json() as AssetTypesApiResponse
+        const parsed = assetTypeSchema.safeParse(json)
 
         if (!parsed.success) {
             const errors = formatZodErrors(parsed.error)
-            return NextResponse.json(
-                {success: false, errors},
-                {status: 400}
-            )
+            return jsonError("Validation failed", 400, {errors});
         }
 
         const data = parsed.data
@@ -39,20 +36,13 @@ export async function POST(req: Request) {
 
         const result = await clientApi.assetTypes.create(doc)
 
-        return NextResponse.json(
-            {
-                success: true,
-                data: result
-            },
-            {status: 201});
-    } catch (error: any) {
-        const backendMessage = error.response?.data;
-        return NextResponse.json(
-            {
-                success: false,
-                error: backendMessage ?? "Unknown error"
-            },
-            {status: 400}
-        );
+        return jsonOk({
+            users: result,
+            status: 201,
+            message: "User created"
+        })
+    } catch (error) {
+        console.error(`POST /api/assetTypes error:`, error);
+        return jsonError("Failed to create assetType.", 500);
     }
 }

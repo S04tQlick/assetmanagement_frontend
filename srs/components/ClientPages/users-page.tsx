@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react"; 
-import { Modal } from "@/srs/components/common/Modal"; 
+import { Modal } from "@/srs/components/common/modal"; 
 import { ServerDataWarningModal } from "@/srs/components/ui-components/error-component/server-data-error";
 import {PageHeader} from "@/srs/components/ui-components/layout-component/page-header";
-import {User_Types} from "@/srs/types/user-Types";
-import {UsersList} from "@/srs/components/Forms/ListForms/UsersList";
-import {UserForm} from "@/srs/components/Forms/DataForms/UserForm";
+import {User_Types} from "@/srs/types/user.types";
+import {UsersList} from "@/srs/components/Forms/ListForms/users-list";
+import {UserForm} from "@/srs/components/Forms/DataForms/user-form"; 
 
 interface ClientProps {
     users: User_Types[];
@@ -17,7 +17,7 @@ interface ClientProps {
 
 export default function UsersPageClient({pageTitle, slug, baseUrl, users}: ClientProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    
     if (!users) {
         return (
             <ServerDataWarningModal

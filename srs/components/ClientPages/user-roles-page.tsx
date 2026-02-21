@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react"; 
-import { Modal } from "@/srs/components/common/Modal"; 
+import { Modal } from "@/srs/components/common/modal"; 
 import { ServerDataWarningModal } from "@/srs/components/ui-components/error-component/server-data-error";
 import {PageHeader} from "@/srs/components/ui-components/layout-component/page-header"; 
-import {UserRole_Types} from "@/srs/types/userRole-Types";
-import {UserRolesList} from "@/srs/components/Forms/ListForms/UserRolesList";
+import {UserRole_Types} from "@/srs/types/user-role.types";
+import {UserRolesList} from "@/srs/components/Forms/ListForms/user-roles-list";
 import {UserRoleForm} from "@/srs/components/Forms/AuthForms/user-role-form";
 
 interface ClientProps {

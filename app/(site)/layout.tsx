@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import {Navbar} from "@/srs/components/SiteComponents/Navbar";
-import {Breadcrumb} from "@/srs/components/SiteComponents/Breadcrumb";
-import LayoutWrapper from "@/srs/components/SiteComponents/LayoutWrapper";
+import {Navbar} from "@/srs/components/SiteComponents/navbar";
+import {Breadcrumb} from "@/srs/components/SiteComponents/breadcrumb";
+import LayoutWrapper from "@/srs/components/SiteComponents/layout-wrapper";
 
 
 export const metadata: Metadata = {

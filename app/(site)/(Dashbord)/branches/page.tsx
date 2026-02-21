@@ -3,7 +3,9 @@ import {GenerateSlug} from "@/srs/utils/slug";
 import BranchesPageClient from "@/srs/components/ClientPages/branches-page"; 
 
 const pageTitle = "Branch";
+const logoTitle = "File Upload";
 const slug =  GenerateSlug(pageTitle);
+const logoSlug =  GenerateSlug(logoTitle);
 
 export default async function BranchesPage() {
     const baseUrl = await getSiteOrigin()
@@ -16,6 +18,7 @@ export default async function BranchesPage() {
             pageTitle={pageTitle}
             baseUrl={baseUrl}
             slug={slug}
+            logoSlug={logoSlug}
         />
     )
 } 
