@@ -37,6 +37,5 @@ export const assetSchema = z.object({
     accumulatedDepreciation: z.number().nonnegative("Accumulated depreciation must be non-negative"),
 })
 
-// Type inference
 export type AssetInput = z.infer<typeof assetSchema>;
 

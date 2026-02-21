@@ -35,5 +35,4 @@ export const addressSchema = z.object({
         .uuid("queryId must be valid"),
 })
 
-// Inferred TypeScript type
 export type AddressInput = z.infer<typeof addressSchema>;

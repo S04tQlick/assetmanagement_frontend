@@ -15,15 +15,4 @@ export const PageHeader =({title, onAdd}: { title: string; onAdd: () => void; })
             </Button>
         </div>
     );
-}
-
-
-
-
-
-
-
-
-// <div className="bg-gray-100 py-2 px-4">
-//     <h2 className="text-xl font-semibold text-gray-800">Top Users</h2>
-// </div>
+} 

@@ -11,11 +11,4 @@ export type Branch_Types = {
     isHeadOffice:boolean
 }
 
-// export type Branch_TypesInput = {
-//     branchName: string
-//     latitude: number
-//     longitude: number
-//     institutionId: string  
-// }
-
 export type BranchesApiResponse = ApiResponse<Branch_Types> 

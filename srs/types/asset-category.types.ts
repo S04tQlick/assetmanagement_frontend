@@ -9,10 +9,4 @@ export type AssetCategory_Types = {
     institutions: Institution_Types
 }
 
-// export type AssetCategory_TypesInput = {
-//     assetCategoryName: string
-//     assetTypeId: string
-//     institutionId: string
-// }
-
 export type AssetCategoriesApiResponse = ApiResponse<AssetCategory_Types>;

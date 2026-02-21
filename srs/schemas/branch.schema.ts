@@ -13,5 +13,4 @@ export const branchSchema = z.object({
         .uuid("InstitutionId must be valid"),
 })
 
-// Type inference
 export type BranchInput = z.infer<typeof branchSchema>;

@@ -6,40 +6,48 @@ import { ModalHeader } from "@/srs/components/common/modal-header"
 import { ModalBody } from "@/srs/components/common/modal-body"
 import {ModalFooter} from "@/srs/components/common/modal-footer";
 import {Button} from "@/srs/components/common/button";
-import {AssetCategory_Types} from "@/srs/types/asset-category.types";
-import {AssetCategoryForm} from "@/srs/components/Forms/DataForms/asset-category-form";
-import {DeleteModal} from "@/srs/components/ui-components/modal-component/delete-modal"; 
+import {DeleteModal} from "@/srs/components/ui-components/modal-component/delete-modal";
+import {Vendor_Types} from "@/srs/types/vendor.types";
+import {VendorForm} from "@/srs/components/Forms/DataForms/vendor-form"; 
 
 interface Props {
     pageTitle: string
     slug: string
-    assetCategory: AssetCategory_Types
+    vendor: Vendor_Types
     onClose: () => void
 }
 
-export default function AssetCategoryDetailClient({ pageTitle, slug, assetCategory, onClose }: Props) {
+export default function VendorDetailClient({ pageTitle, slug, vendor, onClose }: Props) {
     const [editOpen, setEditOpen] = useState(false)
     const [deleteOpen, setDeleteOpen] = useState(false)
 
     return (
         <>
             <div className="space-y-4">
-                <ModalHeader>{assetCategory.assetCategoryName}</ModalHeader>
+                <ModalHeader>{vendor.vendorsName}</ModalHeader>
                 <ModalBody>
                     <ul>
-                        {assetCategory.assetTypes && (
+                        {vendor.emailAddress && (
                             <li>
-                                <span className="font-bold text-black dark:text-gray-900">{"Asset Type:"}</span>
+                                <span className="font-bold text-black dark:text-gray-900">{"Email Address:"}</span>
                                 <p className="text-black dark:text-gray-900 text-sm mt-2 mb-2">
-                                    {assetCategory.assetTypes.assetTypeName}
+                                    {vendor.emailAddress}
                                 </p>
                             </li>
                         )}
-                        {assetCategory.institutions && (
+                        {vendor.contactInfo && (
+                            <li>
+                                <span className="font-bold text-black dark:text-gray-900">{"Contact Info:"}</span>
+                                <p className="text-black dark:text-gray-900 text-sm mt-2 mb-2">
+                                    {vendor.contactInfo}
+                                </p>
+                            </li>
+                        )}
+                        {vendor.institutions && (
                             <li>
                                 <span className="font-bold text-black dark:text-gray-900">{"Institution:"}</span>
                                 <p className="text-black dark:text-gray-900 text-sm mt-2 mb-2">
-                                    {assetCategory.institutions.institutionName}
+                                    {vendor.institutions.institutionName}
                                 </p>
                             </li>
                         )}
@@ -65,10 +73,10 @@ export default function AssetCategoryDetailClient({ pageTitle, slug, assetCatego
             </div>
 
             <Modal open={editOpen} onClose={() => setEditOpen(false)} size={"md"}>
-                <AssetCategoryForm
+                <VendorForm
                     pageTitle={pageTitle}
                     slug={slug}
-                    initialData={assetCategory}
+                    initialData={vendor}
                     onSuccess={() => {
                         setEditOpen(false)
                         onClose()
@@ -80,8 +88,8 @@ export default function AssetCategoryDetailClient({ pageTitle, slug, assetCatego
                 <DeleteModal
                     pageTitle={pageTitle}
                     slug={slug}
-                    id={assetCategory.id}
-                    recordName={assetCategory.assetCategoryName}
+                    id={vendor.id}
+                    recordName={vendor.vendorsName}
                     onSuccess={() => {
                         setDeleteOpen(false)
                         onClose()

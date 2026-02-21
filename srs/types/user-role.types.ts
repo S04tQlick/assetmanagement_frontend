@@ -8,9 +8,4 @@ export type UserRole_Types = {
     roles: Role_Types
 }
 
-// export type UserRole_TypesInput = { 
-//     userId: string
-//     roleId: string
-// }
-
 export type UserRolesApiResponse = ApiResponse<UserRole_Types> 

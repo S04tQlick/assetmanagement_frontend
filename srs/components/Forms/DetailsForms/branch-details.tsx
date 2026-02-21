@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useEffect, useState} from "react"
+import React, {useState} from "react"
 import { Modal } from "@/srs/components/common/modal" 
 import { Branch_Types } from "@/srs/types/branch.types"
 import { ModalHeader } from "@/srs/components/common/modal-header"
@@ -10,7 +10,6 @@ import {Button} from "@/srs/components/common/button";
 import DynamicGeolocationPicker from "@/srs/components/Maps/dynamic-geolocation-picker";
 import {BranchForm} from "@/srs/components/Forms/DataForms/branch-form";
 import {InstitutionLogoFetch} from "@/srs/lib/awsS3Bucket/institution-logo-fetch";
-import {Institution_Types} from "@/srs/types/institution.types";
 import {useDropdowns} from "@/srs/hooks/use-dropdowns";
 
 interface Props {
@@ -24,7 +23,7 @@ interface Props {
 export default function BranchDetailClient({ pageTitle, slug, logoSlug, branch, onClose }: Props) {
     const [editOpen, setEditOpen] = useState(false)
     
-    const {data: dropdowns, loading: dropdownLoading, error} = useDropdowns(
+    const {data: dropdowns} = useDropdowns(
         [`institutions/${branch.institutionId}`],
         (data) => ({
             institutions: data[0].data ?? [],

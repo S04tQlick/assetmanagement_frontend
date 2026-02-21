@@ -7,7 +7,6 @@ export type UploadImageResponse_Types = {
     error?: string;
 }
 
-
 export interface SanityImageDocument {
     _id: string;
     _type: string;
