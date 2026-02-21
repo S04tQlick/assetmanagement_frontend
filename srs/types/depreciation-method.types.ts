@@ -5,10 +5,7 @@ export type DepreciationMethod_Types = {
     depreciationMethod:string,
 }
 
-
 export type DepreciationMethodsApiResponse =  ApiResponse<DepreciationMethod_Types> 
-
-
 
 export const depreciationSelectMethods: DepreciationMethod_Types[] = [
     { id: "StraightLine", depreciationMethod: "Straight Line" },

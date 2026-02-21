@@ -20,5 +20,4 @@ export const vendorSchema = z.object({
         .uuid("InstitutionId must be valid"),
 })
 
-// Type inference
 export type VendorInput = z.infer<typeof vendorSchema>;

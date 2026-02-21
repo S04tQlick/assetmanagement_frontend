@@ -1,6 +1,5 @@
 import {ApiResponse} from "@/srs/utils/api-response";
 
-
 export type Address_Types = {
     id?: string
     street: string

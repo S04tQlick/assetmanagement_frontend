@@ -149,7 +149,7 @@ export const UserForm = ({ pageTitle, slug, initialData, onSuccess }: Props) => 
                     value={form.institutionId}
                     options={dropdowns.institutions}
                     optionLabel={(val) => val.institutionName}
-                    optionValue={(val) => val.id}
+                    optionValue={(val) => val.id ?? ""}
                     onChange={(val) => updateField("institutionId", val)}
                     required
                     error={errors.institutionId}

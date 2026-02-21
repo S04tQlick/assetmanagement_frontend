@@ -5,8 +5,4 @@ export type Role_Types = {
     roleName: string 
 }
 
-// export type Role_TypesInput = {
-//     roleName: string 
-// }
-
 export type RolesApiResponse = ApiResponse<Role_Types>

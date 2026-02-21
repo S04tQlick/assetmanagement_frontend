@@ -24,7 +24,6 @@ export const userSchema = z.discriminatedUnion("mode", [
     userUpdateSchema,
 ]);
 
-// Inferred types — no manual typing needed
 export type UserCreateInput = z.infer<typeof userCreateSchema>;
 export type UserUpdateInput = z.infer<typeof userUpdateSchema>;
 export type UserRequestInput = z.infer<typeof userSchema>;

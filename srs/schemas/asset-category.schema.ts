@@ -13,5 +13,4 @@ export const assetCategorySchema = z.object({
         .uuid("InstitutionId must be valid"),
 })
 
-// Inferred TypeScript type
 export type AssetCategoryInput = z.infer<typeof assetCategorySchema>;

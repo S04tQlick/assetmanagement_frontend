@@ -10,10 +10,9 @@ interface CrudFormOptions {
     isEdit: boolean;
 }
 
-
 export function useCrudForm({showError, showSuccess, onSuccess, router, slug, isEdit}: CrudFormOptions) {
     const [loading, setLoading] = useState(false);
-
+   
     const submitForm = async (payload: any, id?: string) => {
         setLoading(true);
 

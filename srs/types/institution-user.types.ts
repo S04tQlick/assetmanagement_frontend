@@ -8,9 +8,4 @@ export type InstitutionUser_Types = {
     InstitutionName?: string
 }
 
-// export type InstitutionUser_TypesInput = {
-//     userId: string
-//     InstitutionId: string
-// }
-
 export type InstitutionUsersApiResponse = ApiResponse<InstitutionUser_Types> 

@@ -8,5 +8,4 @@ export const userRoleSchema = z.object({
         .uuid("RoleId must be valid"),
 })
 
-// Type inference
 export type UserRoleInput = z.infer<typeof userRoleSchema>;

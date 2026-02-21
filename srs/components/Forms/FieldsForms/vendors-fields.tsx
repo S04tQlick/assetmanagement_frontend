@@ -46,16 +46,4 @@ export const VendorsFields = ({vendorsName, emailAddress, contactInfo, onChange,
             </div>
         </>
     )
-}
-
-
-
-
-
-
-
-
-
-
-
-
+} 

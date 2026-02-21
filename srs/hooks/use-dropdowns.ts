@@ -9,7 +9,6 @@ export function useDropdowns<T extends Record<string, any>>(
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    
 
     useEffect(() => {
         const load = async () => {
@@ -27,5 +26,5 @@ export function useDropdowns<T extends Record<string, any>>(
         load();
     }, []);
 
-    return { data, loading, error };
+    return {data, loading, error};
 }

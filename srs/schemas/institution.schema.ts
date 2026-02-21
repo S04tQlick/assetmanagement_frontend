@@ -38,5 +38,4 @@ export const institutionSchema = z.object({
         .optional(),
 });
 
-// Inferred TypeScript type
 export type InstitutionInput = z.infer<typeof institutionSchema>;

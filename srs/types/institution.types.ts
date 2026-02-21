@@ -12,6 +12,3 @@ export type Institution_Types = {
 }
 
 export type InstitutionsApiResponse = ApiResponse<Institution_Types>
-
-// logoSanityId?: string,
-// logoUrl?: string,
