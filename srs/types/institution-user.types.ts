@@ -1,3 +1,5 @@
+import {ApiResponse} from "@/srs/utils/api-response";
+
 export type InstitutionUser_Types = {
     id?: string
     userId: string
@@ -6,17 +8,9 @@ export type InstitutionUser_Types = {
     InstitutionName?: string
 }
 
-export type InstitutionUser_TypesInput = {
-    userId: string
-    InstitutionId: string
-}
+// export type InstitutionUser_TypesInput = {
+//     userId: string
+//     InstitutionId: string
+// }
 
-export type InstitutionUsersApiResponse = {
-    success: boolean;
-    message: string;
-    data: InstitutionUser_Types[];
-    rowCount: number;
-    userCount: number;
-    branchCount: number;
-    assetCount: number;
-}
+export type InstitutionUsersApiResponse = ApiResponse<InstitutionUser_Types> 

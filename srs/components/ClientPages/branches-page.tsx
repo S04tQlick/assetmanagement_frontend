@@ -12,10 +12,11 @@ interface ClientProps {
     branches: Branch_Types[];
     pageTitle: string;
     slug: string;
+    logoSlug: string;
     baseUrl: string;
 }
 
-export default function BranchesPageClient({pageTitle, slug, baseUrl, branches}: ClientProps) {
+export default function BranchesPageClient({pageTitle, slug, logoSlug, baseUrl, branches}: ClientProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     if (!branches) {
@@ -54,6 +55,7 @@ export default function BranchesPageClient({pageTitle, slug, baseUrl, branches}:
                     branches={branches}
                     pageTitle={pageTitle}
                     slug={slug}
+                    logoSlug={logoSlug}
                 />
             )}
             

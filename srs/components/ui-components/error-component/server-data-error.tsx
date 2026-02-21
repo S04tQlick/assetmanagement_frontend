@@ -60,8 +60,6 @@ export const ServerDataWarningModal = ({
                         <strong>{message}</strong>
                     </p>
                     <p className="text-gray-700">Please try again.</p>
-
-                    
                 </ModalBody>
 
                 <ModalFooter>

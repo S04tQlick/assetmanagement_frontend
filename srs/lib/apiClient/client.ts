@@ -7,6 +7,8 @@ import {vendorsApi} from "@/srs/lib/api/vendors.api";
 import {userRolesApi} from "@/srs/lib/api/user-roles.api";
 import {assetsApi} from "@/srs/lib/api/assets.api";
 import {addressesApi} from "@/srs/lib/api/addresses.api";
+import {imagesApi} from "@/srs/lib/api/images.api";
+import {fileUploadsApi} from "@/srs/lib/api/file-uploads.api";
 
 
 export const clientApi = {
@@ -19,4 +21,6 @@ export const clientApi = {
     vendors: vendorsApi,
     userRoles: userRolesApi,
     addresses: addressesApi,
+    images: imagesApi,
+    fileUploads: fileUploadsApi,
 }

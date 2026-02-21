@@ -1,36 +1,39 @@
 'use client'
 
-import React, { useState, useEffect, FormEvent } from "react";
-import { useRouter } from "next/navigation";
-import { useToastError } from "@/srs/hooks/use-toast-error";
-import { useZodForm } from "@/srs/hooks/use-zod-form";
-import { ModalHeader } from "@/srs/components/common/modal-header";
-import { ModalBody } from "@/srs/components/common/modal-body";
-import { ModalFooter } from "@/srs/components/common/modal-footer";
-import { ModalTitle } from "@/srs/components/common/modal-title";
-import { Button } from "@/srs/components/common/button";
-import { Dropdown } from "@/srs/components/common/dropdown";
-import { ErrorForm } from "@/srs/components/Forms/ErrorForms/form-error";
-import { BranchesFields } from "@/srs/components/Forms/FieldsForms/branch-fields"; 
-import { Branch_Types } from "@/srs/types/branch.types";
-import { Institution_Types } from "@/srs/types/institution.types";
-import { useGeolocation } from "@/srs/lib/geoLocation/use-geolocation";
-import { GeoLocationFields } from "../GeoLocationForms/geo-location-fields";
+import React, { FormEvent, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useToastError } from "@/srs/hooks/use-toast-error"
+import { useToastSuccess } from "@/srs/hooks/use-toast-success"
+import { useZodForm } from "@/srs/hooks/use-zod-form"
+import { useDropdowns } from "@/srs/hooks/use-dropdowns"
+import { useCrudForm } from "@/srs/hooks/use-crud-form"
+import { ModalHeader } from "@/srs/components/common/modal-header"
+import { ModalBody } from "@/srs/components/common/modal-body"
+import { ModalFooter } from "@/srs/components/common/modal-footer"
+import { ModalTitle } from "@/srs/components/common/modal-title"
+import { Button } from "@/srs/components/common/button"
+import { ErrorForm } from "@/srs/components/Forms/ErrorForms/form-error"
+import { Dropdown } from "@/srs/components/common/dropdown"
+import {Institution_Types} from "@/srs/types/institution.types";
+import {GeoLocationFields} from "@/srs/components/Forms/GeoLocationForms/geo-location-fields";
+import { BranchesFields } from "../FieldsForms/branch-fields"
+import { useGeolocation } from "@/srs/lib/geoLocation/use-geolocation"
 import {branchSchema} from "@/srs/schemas/branch.schema";
- 
+import {Branch_Types} from "@/srs/types/branch.types";
 
 interface Props {
-    pageTitle: string;
-    slug: string;
-    initialData?: Branch_Types;
-    onSuccess?: () => void;
+    pageTitle: string
+    slug: string
+    initialData?: Branch_Types
+    onSuccess?: () => void
 }
 
 export const BranchForm = ({ pageTitle, slug, initialData, onSuccess }: Props) => {
-    const router = useRouter();
-    const isEdit = Boolean(initialData?.id);
-    const { showError } = useToastError();
-    
+    const router = useRouter()
+    const isEdit = Boolean(initialData?.id)
+    const {showError} = useToastError()
+    const {showSuccess} = useToastSuccess()
+
     const {
         form,
         errors,
@@ -41,35 +44,21 @@ export const BranchForm = ({ pageTitle, slug, initialData, onSuccess }: Props) =
         setForm,
     } = useZodForm(branchSchema, {
         branchName: initialData?.branchName ?? "",
-        institutionId: initialData?.institutions?.id ?? "",
+        institutionId: initialData?.institutionId ?? "",
         latitude: initialData?.latitude ?? 0,
         longitude: initialData?.longitude ?? 0,
-    });
-
-    const [loading, setLoading] = useState(false);
-
-    const [dropdowns, setDropdowns] = useState({ 
-        institutions: [] as Institution_Types[],
-    }) 
+    })
+    
+    const {data: dropdowns, loading: dropdownLoading, error} = useDropdowns(
+        ["institutions"],
+        (data) => ({
+            institutions: data[0].institutions ?? [],
+        })
+    )
 
     useEffect(() => {
-        const fetchDropdowns = async () => {
-            try {
-                const endpoints = ["institutions"]
-                const responses = await Promise.all(endpoints.map((e) => fetch(`/api/${e}`)))
-                const data = await Promise.all(responses.map((r) => r.json()))
-
-                setDropdowns({
-                    institutions: data[0].institutions ?? [],
-                });
-            } catch (err) {
-                console.error("Failed to load dropdowns:", err);
-                setFormError("Failed to load dropdowns");
-            }
-        };
-
-        fetchDropdowns();
-    }, [setFormError]);
+        if (error) setFormError(error)
+    }, [error])
 
     const { error: geoError, loading: geoLoading, getLocation } = useGeolocation(
         (lat, lng) => {
@@ -79,8 +68,8 @@ export const BranchForm = ({ pageTitle, slug, initialData, onSuccess }: Props) =
                 longitude: lng,
             }));
         }
-    ); 
-    
+    );
+
     const requiredFields = [
         form.branchName,
         form.institutionId,
@@ -90,66 +79,44 @@ export const BranchForm = ({ pageTitle, slug, initialData, onSuccess }: Props) =
 
     const isFormIncomplete = requiredFields.some((v) => !v?.trim());
 
+    const {loading, submitForm} = useCrudForm({
+        showError,
+        showSuccess,
+        onSuccess,
+        router,
+        slug,
+        isEdit,
+    })
+
     const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setFormError(null);
+        e.preventDefault()
+        setFormError(null)
 
-        const payload = validateForm();
-        if (!payload) {
-            setLoading(false);
-            return;
-        }
+        const payload = validateForm()
+        if (!payload) return
 
-        const url = isEdit
-            ? `/api/${slug}/${initialData!.id}`
-            : `/api/${slug}`;
+        await submitForm(payload, initialData?.id)
+    }
 
-        const method = isEdit ? "PUT" : "POST";
-
-        try {
-            const res = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await res.json();
-
-            if (!data.success) {
-                showError(data);
-                return;
-            }
-
-            if (onSuccess) onSuccess();
-
-            router.push(`/${slug}`);
-        } catch (err) {
-            showError(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-    
     return (
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
             <ModalHeader>
-                <ModalTitle isEdit={isEdit} pageTitle={pageTitle} />
+                <ModalTitle isEdit={isEdit} pageTitle={pageTitle}/>
             </ModalHeader>
 
             <ModalBody>
                 <BranchesFields
-                    branchName={form.branchName}
+                    {...form}
                     onChange={updateField}
                     errors={errors}
                 />
 
-                <Dropdown
+                <Dropdown<Institution_Types>
                     label="Institution"
                     value={form.institutionId}
-                    options={dropdowns.institutions}
-                    optionLabel={(val) => val.institutionName}
-                    optionValue={(val) => val.id}
+                    options={dropdowns?.institutions ?? []}
+                    optionLabel={(v) => v.institutionName}
+                    optionValue={(v) => v.id ?? ""}
                     onChange={(val) => updateField("institutionId", val)}
                     required
                     error={errors.institutionId}
@@ -166,18 +133,239 @@ export const BranchForm = ({ pageTitle, slug, initialData, onSuccess }: Props) =
                     geoError={geoError}
                 />
 
-                {formError && <ErrorForm message={formError} />}
+                {formError && <ErrorForm message={formError}/>}
             </ModalBody>
 
             <ModalFooter>
                 <Button
                     type="submit"
                     loading={loading}
-                    isDisabled={isFormIncomplete}
+                    isDisabled={ dropdownLoading || isFormIncomplete }
                     isEdit={isEdit}
                     pageTitle={pageTitle}
                 />
             </ModalFooter>
         </form>
-    );
-};
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+// 'use client'
+//
+// import React, { useState, useEffect, FormEvent } from "react";
+// import { useRouter } from "next/navigation";
+// import { useToastError } from "@/srs/hooks/use-toast-error";
+// import { useZodForm } from "@/srs/hooks/use-zod-form";
+// import { ModalHeader } from "@/srs/components/common/modal-header";
+// import { ModalBody } from "@/srs/components/common/modal-body";
+// import { ModalFooter } from "@/srs/components/common/modal-footer";
+// import { ModalTitle } from "@/srs/components/common/modal-title";
+// import { Button } from "@/srs/components/common/button";
+// import { Dropdown } from "@/srs/components/common/dropdown";
+// import { ErrorForm } from "@/srs/components/Forms/ErrorForms/form-error";
+// import { BranchesFields } from "@/srs/components/Forms/FieldsForms/branch-fields"; 
+// import { Branch_Types } from "@/srs/types/branch.types";
+// import { Institution_Types } from "@/srs/types/institution.types";
+// import { useGeolocation } from "@/srs/lib/geoLocation/use-geolocation";
+// import { GeoLocationFields } from "../GeoLocationForms/geo-location-fields";
+// import {branchSchema} from "@/srs/schemas/branch.schema";
+// 
+//
+// interface Props {
+//     pageTitle: string;
+//     slug: string;
+//     initialData?: Branch_Types;
+//     onSuccess?: () => void;
+// }
+//
+// export const BranchForm = ({ pageTitle, slug, initialData, onSuccess }: Props) => {
+//     const router = useRouter();
+//     const isEdit = Boolean(initialData?.id);
+//     const { showError } = useToastError();
+//    
+//     const {
+//         form,
+//         errors,
+//         formError,
+//         setFormError,
+//         updateField,
+//         validateForm,
+//         setForm,
+//     } = useZodForm(branchSchema, {
+//         branchName: initialData?.branchName ?? "",
+//         institutionId: initialData?.institutionId ?? "",
+//         latitude: initialData?.latitude ?? 0,
+//         longitude: initialData?.longitude ?? 0,
+//     });
+//
+//     const [loading, setLoading] = useState(false);
+//
+//     const [dropdowns, setDropdowns] = useState({ 
+//         institutions: [] as Institution_Types[],
+//     }) 
+//
+//     useEffect(() => {
+//         const fetchDropdowns = async () => {
+//             try {
+//                 const endpoints = ["institutions"]
+//                 const responses = await Promise.all(endpoints.map((e) => fetch(`/api/${e}`)))
+//                 const data = await Promise.all(responses.map((r) => r.json()))
+//
+//                 setDropdowns({
+//                     institutions: data[0].institutions ?? [],
+//                 });
+//             } catch (err) {
+//                 console.error("Failed to load dropdowns:", err);
+//                 setFormError("Failed to load dropdowns");
+//             }
+//         };
+//
+//         fetchDropdowns();
+//     }, [setFormError]);
+//
+//     const { error: geoError, loading: geoLoading, getLocation } = useGeolocation(
+//         (lat, lng) => {
+//             setForm((prev) => ({
+//                 ...prev,
+//                 latitude: lat,
+//                 longitude: lng,
+//             }));
+//         }
+//     ); 
+//    
+//     const requiredFields = [
+//         form.branchName,
+//         form.institutionId,
+//         form.latitude?.toString(),
+//         form.longitude?.toString(),
+//     ];
+//
+//     const isFormIncomplete = requiredFields.some((v) => !v?.trim());
+//
+//     const handleSubmit = async (e: FormEvent) => {
+//         e.preventDefault();
+//         setLoading(true);
+//         setFormError(null);
+//
+//         const payload = validateForm();
+//         if (!payload) {
+//             setLoading(false);
+//             return;
+//         }
+//
+//         const url = isEdit
+//             ? `/api/${slug}/${initialData!.id}`
+//             : `/api/${slug}`;
+//
+//         const method = isEdit ? "PUT" : "POST";
+//
+//         try {
+//             const res = await fetch(url, {
+//                 method,
+//                 headers: { "Content-Type": "application/json" },
+//                 body: JSON.stringify(payload),
+//             });
+//
+//             const data = await res.json();
+//
+//             if (!data.success) {
+//                 showError(data);
+//                 return;
+//             }
+//
+//             if (onSuccess) onSuccess();
+//
+//             router.push(`/${slug}`);
+//         } catch (err) {
+//             showError(err);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+//    
+//     return (
+//         <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+//             <ModalHeader>
+//                 <ModalTitle isEdit={isEdit} pageTitle={pageTitle} />
+//             </ModalHeader>
+//
+//             <ModalBody>
+//                 <BranchesFields
+//                     branchName={form.branchName}
+//                     onChange={updateField}
+//                     errors={errors}
+//                 />
+//
+//                 <Dropdown
+//                     label="Institution"
+//                     value={form.institutionId}
+//                     options={dropdowns.institutions}
+//                     optionLabel={(val) => val.institutionName}
+//                     optionValue={(val) => val.id ?? ""}
+//                     onChange={(val) => updateField("institutionId", val)}
+//                     required
+//                     error={errors.institutionId}
+//                 />
+//
+//                 <GeoLocationFields
+//                     latitude={form.latitude}
+//                     longitude={form.longitude}
+//                     onChange={(field, value) =>
+//                         updateField(field as any, Number(value))
+//                     }
+//                     getLocation={getLocation}
+//                     geoLoading={geoLoading}
+//                     geoError={geoError}
+//                 />
+//
+//                 {formError && <ErrorForm message={formError} />}
+//             </ModalBody>
+//
+//             <ModalFooter>
+//                 <Button
+//                     type="submit"
+//                     loading={loading}
+//                     isDisabled={isFormIncomplete}
+//                     isEdit={isEdit}
+//                     pageTitle={pageTitle}
+//                 />
+//             </ModalFooter>
+//         </form>
+//     );
+// };

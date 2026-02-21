@@ -1,21 +1,12 @@
+import {ApiResponse} from "@/srs/utils/api-response";
+
 export type DepreciationMethod_Types = {
-    id:string,
+    id?:string,
     depreciationMethod:string,
 }
 
-export type DepreciationMethod_TypesInput = {
-    depreciationMethod: string, 
-}
 
-export type DepreciationMethodsApiResponse = {
-    success: boolean;
-    message: string;
-    data: DepreciationMethod_Types[];
-    rowCount: number;
-    userCount: number;
-    branchCount: number;
-    assetCount: number;
-}
+export type DepreciationMethodsApiResponse =  ApiResponse<DepreciationMethod_Types> 
 
 
 

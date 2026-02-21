@@ -9,10 +9,11 @@ import BranchDetailClient from "@/srs/components/Forms/DetailsForms/branch-detai
 interface ListProps {
     pageTitle: string;
     slug: string;
+    logoSlug: string;
     branches: Branch_Types[]
 }
 
-export const BranchesList = ({ pageTitle, slug, branches }: ListProps) => {
+export const BranchesList = ({ pageTitle, slug, logoSlug, branches }: ListProps) => {
     const [open, setOpen] = useState(false)
     const [selected, setSelected] = useState<Branch_Types | null>(null)
 
@@ -45,6 +46,7 @@ export const BranchesList = ({ pageTitle, slug, branches }: ListProps) => {
                     <BranchDetailClient
                         pageTitle={pageTitle}
                         slug={slug}
+                        logoSlug={logoSlug}
                         branch={selected}
                         onClose={() => setOpen(false)}
                     />

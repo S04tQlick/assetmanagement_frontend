@@ -13,9 +13,10 @@ interface ClientProps {
     pageTitle: string
     baseUrl: string
     slug: string
+    logoSlug: string
 }
 
-export default function InstitutionsPageClient({pageTitle, slug,baseUrl, institutions}: ClientProps) {
+export default function InstitutionsPageClient({pageTitle, slug,logoSlug,baseUrl, institutions}: ClientProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     if (!institutions) {
@@ -54,6 +55,7 @@ export default function InstitutionsPageClient({pageTitle, slug,baseUrl, institu
                     institutions={institutions}
                     pageTitle={pageTitle}
                     slug={slug}
+                    logoSlug={logoSlug}
                 />
             )}
 
@@ -61,6 +63,7 @@ export default function InstitutionsPageClient({pageTitle, slug,baseUrl, institu
                 <InstitutionForm
                     pageTitle={pageTitle}
                     slug={slug}
+                    logoSlug={logoSlug}
                     onSuccess={() => setIsModalOpen(false)}
                 />
             </Modal>

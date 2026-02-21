@@ -8,16 +8,20 @@ import { ModalBody } from "@/srs/components/common/modal-body"
 import {ModalFooter} from "@/srs/components/common/modal-footer"; 
 import {Button} from "@/srs/components/common/button";
 import {InstitutionForm} from "@/srs/components/Forms/DataForms/institution-form ";
+import {DeleteModal} from "@/srs/components/ui-components/modal-component/delete-modal";
+import {InstitutionLogoFetch} from "@/srs/lib/awsS3Bucket/institution-logo-fetch";
 
 interface Props {
     pageTitle: string
     slug: string
+    logoSlug: string
     institution: Institution_Types
     onClose: () => void
 }
 
-export default function InstitutionDetailClient({ pageTitle, slug, institution, onClose }: Props) {
+export default function InstitutionDetailClient({ pageTitle, slug, logoSlug, institution, onClose }: Props) {
     const [editOpen, setEditOpen] = useState(false)
+    const [deleteOpen, setDeleteOpen] = useState(false)
 
     return (
         <>
@@ -28,67 +32,93 @@ export default function InstitutionDetailClient({ pageTitle, slug, institution, 
                 <ModalBody>
                     <ul>
                         {institution.institutionEmail && (
-                            <li>
+                             <li>
                                 <span className="font-bold text-black dark:text-gray-900">Description:</span>
                                 <p className="text-black dark:text-gray-900 text-sm mt-2 mb-2">
                                     {institution.institutionEmail}
                                 </p>
                             </li>
                         )}
-                            {institution.institutionContactNumber && (
-                                <li>
-                                    <span className="font-bold text-black dark:text-gray-900">institutionContactNumber:</span>
-                                    <p className="text-black dark:text-gray-900 text-sm mt-2 mb-2">
-                                        {institution.institutionContactNumber}
-                                    </p>
-                                </li>
-                            )}
-                            {institution.primaryColor && (
-                                <li>
-                                    <span className="font-bold text-black dark:text-gray-900">primaryColor:</span>
-                                    <p className="text-black dark:text-gray-900 text-sm mt-2 mb-2">
-                                        {institution.primaryColor}
-                                    </p>
-                                </li>
-                            )}
-                            {institution.secondaryColor && (
-                                <li>
-                                    <span className="font-bold text-black dark:text-gray-900">secondaryColor:</span>
-                                    <p className="text-black dark:text-gray-900 text-sm mt-2">
-                                        {institution.secondaryColor}
-                                    </p>
-                                </li>
-                            )}
-                            {institution.logoUrl && (
-                                <li>
-                                    <span className="font-bold text-black dark:text-gray-900">logoUrl:</span>
-                                    <p className="text-black dark:text-gray-900 text-sm mt-2">
-                                        {institution.logoUrl}
-                                    </p>
-                                    <img src={institution.logoUrl}
-                                         alt={`${institution.institutionName} logo`}
-                                         className="max-w-xs md:max-w-sm m-auto"
-                                    />
-                                </li>
-                            )}
+                        {institution.institutionContactNumber && (
+                            <li>
+                                <span
+                                    className="font-bold text-black dark:text-gray-900">institutionContactNumber:</span>
+                                <p className="text-black dark:text-gray-900 text-sm mt-2 mb-2">
+                                    {institution.institutionContactNumber}
+                                </p>
+                            </li>
+                        )}
+                        {institution.primaryColor && (
+                            <li>
+                                <span className="font-bold text-black dark:text-gray-900">primaryColor:</span>
+                                <p className="text-black dark:text-gray-900 text-sm mt-2 mb-2">
+                                    {institution.primaryColor}
+                                </p>
+                            </li>
+                        )}
+                        {institution.secondaryColor && (
+                            <li>
+                                <span className="font-bold text-black dark:text-gray-900">secondaryColor:</span>
+                                <p className="text-black dark:text-gray-900 text-sm mt-2">
+                                    {institution.secondaryColor}
+                                </p>
+                            </li>
+                        )}
+                        {institution.fileUploads?.[0]?.id && (
+                            <li>
+                                <span className="font-bold text-black dark:text-gray-900">logoUrl:</span>
+                                <img src={InstitutionLogoFetch(institution, logoSlug)}
+                                     alt={`${institution.institutionName} logo`}
+                                     className="max-w-xs md:max-w-sm m-auto"
+                                /> 
+                                
+                            </li>
+                        )}
                     </ul>
 
                 </ModalBody>
                 <ModalFooter>
                     <div className="flex mt-4 space-x-3">
-                        <Button variant="success" onClick={() => setEditOpen(true)} > Edit </Button>
-                        <Button variant="secondary" onClick={onClose} > Close </Button>
-                    </div> 
+                        <div className="flex mt-4 space-x-3">
+                            <Button
+                                onClick={() => setEditOpen(true)}
+                                variant={"success"}
+                            >
+                                Edit
+                            </Button>
+
+                            <Button
+                                onClick={() => setDeleteOpen(true)}
+                                variant={"danger"}
+                            >
+                                Delete
+                            </Button>
+                        </div>
+                    </div>
                 </ModalFooter>
             </div>
-            
+
             <Modal open={editOpen} onClose={() => setEditOpen(false)} size={"xl"}>
                 <InstitutionForm
                     pageTitle={pageTitle}
                     slug={slug}
+                    logoSlug={logoSlug}
                     initialData={institution}
                     onSuccess={() => {
                         setEditOpen(false)
+                        onClose()
+                    }}
+                />
+            </Modal>
+
+            <Modal open={deleteOpen} onClose={() => setDeleteOpen(false)} size={"sm"}>
+                <DeleteModal
+                    pageTitle={pageTitle}
+                    slug={slug}
+                    id={institution.id}
+                    recordName={institution.institutionName}
+                    onSuccess={() => {
+                        setDeleteOpen(false)
                         onClose()
                     }}
                 />

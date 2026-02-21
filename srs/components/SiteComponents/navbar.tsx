@@ -16,6 +16,7 @@ const navItems: NavItem[] = [
     { label: 'Vendors', href: '/vendors' },
     { label: 'Assets', href: '/assets' },
     { label: 'Providers', href: '/maintenance-providers' },
+    { label: 'Uploads', href: '/file-uploads' },
     {
         label: 'System Settings',
         children: [

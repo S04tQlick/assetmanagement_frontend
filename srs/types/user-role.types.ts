@@ -1,23 +1,16 @@
 import {User_Types} from "@/srs/types/user.types";
 import {Role_Types} from "@/srs/types/role.types";
+import {ApiResponse} from "@/srs/utils/api-response";
 
 export type UserRole_Types = {
-    id: string  
+    id?: string  
     users: User_Types 
     roles: Role_Types
 }
 
-export type UserRole_TypesInput = { 
-    userId: string
-    roleId: string
-}
+// export type UserRole_TypesInput = { 
+//     userId: string
+//     roleId: string
+// }
 
-export type UserRolesApiResponse = {
-    success: boolean;
-    message: string;
-    data: UserRole_Types[];
-    rowCount: number;
-    userCount: number;
-    branchCount: number;
-    assetCount: number;
-}
+export type UserRolesApiResponse = ApiResponse<UserRole_Types> 

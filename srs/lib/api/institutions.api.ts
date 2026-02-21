@@ -1,5 +1,5 @@
 import {httpClient} from "@/srs/lib/apiClient/http-client";
-import {Institution_TypesInput, InstitutionsApiResponse} from "@/srs/types/institution.types";
+import {Institution_Types, InstitutionsApiResponse} from "@/srs/types/institution.types";
 
 export const institutionsApi = {
     getAll: () =>
@@ -8,13 +8,13 @@ export const institutionsApi = {
     getById: (id: string) =>
         httpClient<InstitutionsApiResponse>(`/Institutions/${id}`),
 
-    create: (payload: Institution_TypesInput) =>
+    create: (payload: Institution_Types) =>
         httpClient<InstitutionsApiResponse>("/Institutions", {
             method: "POST",
             body: JSON.stringify(payload)
         }),
 
-    update: (id: string, payload: Institution_TypesInput) =>
+    update: (id: string, payload: Institution_Types) =>
         httpClient<InstitutionsApiResponse>(`/Institutions/${id}`, {
             method: "PUT",
             body: JSON.stringify(payload)

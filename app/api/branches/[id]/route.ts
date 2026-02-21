@@ -1,58 +1,62 @@
-import { NextResponse } from 'next/server' 
 import { clientApi } from "@/srs/lib/apiClient/client";
-import {Branch_TypesInput} from "@/srs/types/branch.types";
 import { branchSchema } from "@/srs/schemas/branch.schema";
 import {formatZodErrors} from "@/srs/lib/zod";
+import { jsonError, jsonOk } from "@/srs/lib/apiClient/http-response";
+import {BranchesApiResponse} from "@/srs/types/branch.types";
 
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+type RouteParams = { params: Promise<{ id: string }>; };
+
+export async function GET(req: Request, { params }: RouteParams) {
+    const {id} = await params;
     try {
-
-        const {id} = await params
-        const response = await clientApi.branches.getById(id)
-
-        if (!response.success) {
-            return NextResponse.json(response, {status: response.status ?? 500})
+        const branch = await clientApi.branches.getById(id);
+        if (!branch) {
+            return jsonError("Branch type not found", 404);
         }
-
-        return NextResponse.json({
-            success: true,
-            branch: response.data
-        })
-
+        return jsonOk(branch, "Branch type retrieved");
     } catch (error) {
-        console.error(`GET branch error: ${error}`)
-        return NextResponse.json(
-            {
-                success: false,
-                error: 'Internal server error.'
-            },
-            {status: 500}
-        )
+        console.error(`GET /api/branches/${id} error:`, error);
+        return jsonError("Failed to fetch branch", 500);
     }
 }
 
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: Request, { params }: RouteParams) {
+    const {id} = await params;
     try {
-        const {id} = await params
-        const body = await req.json() as Branch_TypesInput
-        const parsed = branchSchema.safeParse(body)
+        const body = await req.json() as BranchesApiResponse;
+        const parsed = branchSchema.safeParse(body);
 
         if (!parsed.success) {
-            const errors = formatZodErrors(parsed.error)
-            return NextResponse.json({success: false, errors}, {status: 400})
+            const errors = formatZodErrors(parsed.error);
+            return jsonError("Validation failed", 400, {errors});
         }
 
-        const data = parsed.data
-
+        const data = parsed.data;
         const doc = {
-            id,
             ...data,
-        }
-        const result = await clientApi.branches.update(id, doc)
+        };
 
-        return NextResponse.json({success: true, data: result}, {status: 200});
+        const result = await clientApi.branches.update(id, doc);
+
+        return jsonOk(result, "Branch type updated", 200);
     } catch (error) {
-        console.error(`PUT /api/branches/[id] error: ${error}`)
-        return NextResponse.json({success: false, error: 'Failed to update branch.'}, {status: 500})
+        console.error(`PUT /api/branches/[id] error:`, error);
+        return jsonError("Failed to update branch.", 500);
+    }
+}
+
+export async function DELETE(req: Request, { params }: RouteParams) {
+    const {id} = await params;
+    try {
+        const result = await clientApi.branches.delete(id);
+
+        if (!result.success) {
+            return jsonError(result.error ?? "Failed to delete record", result.status ?? 500);
+        }
+
+        return jsonOk(null, "Branch deleted", 200);
+    } catch (error) {
+        console.error(`DELETE /api/branches/${id} error:`, error);
+        return jsonError("Unexpected server error", 500);
     }
 }

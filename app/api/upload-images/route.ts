@@ -1,43 +1,43 @@
-// import {NextResponse} from "next/server"; 
-//
-//
-// export async function POST(req: Request) {
-//     try {
-//         const formData = await req.formData();
-//         const file = formData.get("File") as File | null;
-//
-//         if (!file) {
-//             return NextResponse.json(
-//                 { success: false, error: "No file provided" },
-//                 { status: 400 }
-//             );
-//         }
-// 
-//         const backendRes = await api.post(
-//             `/Images/upload-image`,
-//             formData,
-//             {
-//                 headers: { 
-//                     "Content-Type": "multipart/form-data",
-//                 },
-//             }
-//         );
-//
-//         return NextResponse.json(
-//             {
-//                 success: true,
-//                 data: backendRes.data
-//             },
-//             { status: 201 }
-//         );
-//     } catch (err: any) {
-//         console.error("Upload proxy failed:", err.message);
-//         return NextResponse.json(
-//             { success: false, error: err.message },
-//             { status: 500 }
-//         );
-//     }
-// }
+import {NextResponse} from "next/server";
+import {clientApi} from "@/srs/lib/apiClient/client"; 
+
+
+export async function POST(req: Request) {
+    try {
+        const formData = await req.formData();
+        const file = formData.get("File") as File | null;
+
+        if (!file) {
+            return NextResponse.json(
+                { success: false, error: "No file provided" },
+                { status: 400 }
+            );
+        } 
+
+        await clientApi.images.create(formData) 
+
+        return NextResponse.json(
+            {
+                success: true,
+                data: backendRes.data
+            },
+            { status: 201 }
+        );
+    } catch (err: any) {
+        console.error("Upload proxy failed:", err.message);
+        return NextResponse.json(
+            { success: false, error: err.message },
+            { status: 500 }
+        );
+    }
+}
+
+
+
+
+
+
+
 //
 //
 //

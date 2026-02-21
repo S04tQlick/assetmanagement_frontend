@@ -3,7 +3,7 @@ import {clientApi} from "@/srs/lib/apiClient/client";
 import {assetTypeSchema} from "@/srs/schemas/asset-type.schema";
 import {formatZodErrors} from "@/srs/lib/zod";
 import {jsonError, jsonOk} from "@/srs/lib/apiClient/http-response";
-
+import {AssetTypesApiResponse} from "@/srs/types/asset-type.types";
 
 export async function GET() {
     const result = await clientApi.assetTypes.getAll()
@@ -20,7 +20,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const json = await req.json()
+        const json = await req.json() as AssetTypesApiResponse
         const parsed = assetTypeSchema.safeParse(json)
 
         if (!parsed.success) {
@@ -41,7 +41,6 @@ export async function POST(req: Request) {
             status: 201,
             message: "User created"
         })
-
     } catch (error) {
         console.error(`POST /api/assetTypes error:`, error);
         return jsonError("Failed to create assetType.", 500);

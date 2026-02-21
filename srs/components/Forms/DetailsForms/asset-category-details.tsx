@@ -7,7 +7,9 @@ import { ModalBody } from "@/srs/components/common/modal-body"
 import {ModalFooter} from "@/srs/components/common/modal-footer";
 import {Button} from "@/srs/components/common/button";
 import {AssetCategory_Types} from "@/srs/types/asset-category.types";
-import {AssetCategoryForm} from "@/srs/components/Forms/DataForms/asset-category-form"; 
+import {AssetCategoryForm} from "@/srs/components/Forms/DataForms/asset-category-form";
+import {AssetTypeForm} from "@/srs/components/Forms/DataForms/asset-type-form";
+import {DeleteModal} from "@/srs/components/ui-components/modal-component/delete-modal"; 
 
 interface Props {
     pageTitle: string
@@ -18,6 +20,11 @@ interface Props {
 
 export default function AssetCategoryDetailClient({ pageTitle, slug, assetCategory, onClose }: Props) {
     const [editOpen, setEditOpen] = useState(false)
+    const [deleteOpen, setDeleteOpen] = useState(false)
+    
+    console.log("pageTitle ===:",pageTitle)
+    console.log("slug ===:",slug)
+    console.log("assetCategory ===:",assetCategory)
 
     return (
         <>
@@ -51,11 +58,12 @@ export default function AssetCategoryDetailClient({ pageTitle, slug, assetCatego
                         >
                             Edit
                         </Button>
+
                         <Button
-                            onClick={onClose}
-                            variant={"secondary"}
+                            onClick={() => setDeleteOpen(true)}
+                            variant={"danger"}
                         >
-                            Close
+                            Delete
                         </Button>
                     </div>
                 </ModalFooter>
@@ -72,6 +80,20 @@ export default function AssetCategoryDetailClient({ pageTitle, slug, assetCatego
                     }}
                 />
             </Modal>
+
+            <Modal open={deleteOpen} onClose={() => setDeleteOpen(false)} size={"sm"}>
+                <DeleteModal
+                    pageTitle={pageTitle}
+                    slug={slug}
+                    id={assetCategory.id}
+                    recordName={assetCategory.assetCategoryName}
+                    onSuccess={() => {
+                        setDeleteOpen(false)
+                        onClose()
+                    }}
+                />
+            </Modal>
+            
         </>
     )
 }

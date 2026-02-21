@@ -1,27 +1,20 @@
 import {Institution_Types} from "@/srs/types/institution.types";
+import {ApiResponse} from "@/srs/utils/api-response";
 
 export type Vendor_Types = {
-    id: string
+    id?: string
     vendorsName: string
     emailAddress: string
     contactInfo: string
-    institutionId: string
+    //institutionId: string
     institutions: Institution_Types
 }
 
-export type Vendor_TypesInput = {
-    vendorsName: string
-    emailAddress: string
-    contactInfo: string
-    institutionId: string
-}
+// export type Vendor_TypesInput = {
+//     vendorsName: string
+//     emailAddress: string
+//     contactInfo: string
+//     institutionId: string
+// }
 
-export type VendorsApiResponse = {
-    success: boolean;
-    message: string;
-    data: Vendor_Types[];
-    rowCount: number;
-    userCount: number;
-    branchCount: number;
-    assetCount: number;
-}
+export type VendorsApiResponse = ApiResponse<Vendor_Types>
