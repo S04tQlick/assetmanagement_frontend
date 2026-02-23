@@ -1,8 +1,8 @@
 import {GenerateSlug} from "@/srs/utils/slug";
 import {getSiteOrigin} from "@/srs/lib/siteProtocol/site-origin";
-import {Asset_Types} from "@/srs/types/asset-Types";
 import Link from "next/link";
-import {AssetsList} from "@/srs/components/Forms/ListForms/AssetsList";
+import {Asset_Types} from "@/srs/types/asset.types";
+import {AssetsList} from "@/srs/components/Forms/ListForms/assets-list";
 
 const pageTitle = 'Asset'
 const slug = GenerateSlug(pageTitle)
@@ -27,7 +27,10 @@ export default async function AssetsPage()
                 (assets.length === 0 ? (
                     <p>No {pageTitle} found.</p>
                 ) : (
-                    <AssetsList assets={assets} slug={slug}/>
+                    <AssetsList 
+                        assets={assets} 
+                        slug={slug}
+                    />
                 ))
             }
         </>
