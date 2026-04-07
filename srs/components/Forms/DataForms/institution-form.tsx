@@ -70,7 +70,7 @@ export const InstitutionForm = ({
     })
 
     const handleSubmit = useCallback(async () => {
-        await submitForm(validateForm)
+        // await submitForm(validateForm)
     }, [submitForm, validateForm])
 
     useEffect(() => {
