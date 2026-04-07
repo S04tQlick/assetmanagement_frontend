@@ -8,11 +8,22 @@ import {ApiResponse} from "@/srs/utils/api-response";
 export type Asset_Types = {
     id?:string,
     assetName: string,
-    institutions: Institution_Types,
-    branches:Branch_Types ,
-    assetCategories:AssetCategory_Types,
-    assetTypes:AssetType_Types,
-    vendors:Vendor_Types,
+    institutionId: string,
+    branchId: string,
+    assetCategoryId: string,
+    assetTypeId: string,
+    vendorId: string,
+    
+    
+    
+    
+    // institutions: Institution_Types,
+    // branches:Branch_Types ,
+    // assetCategories:AssetCategory_Types,
+    // assetTypes:AssetType_Types,
+    // vendors:Vendor_Types,
+    
+    
     serialNumber: string,
     purchaseDate: string,
     purchasePrice: Number,

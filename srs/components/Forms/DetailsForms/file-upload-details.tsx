@@ -6,7 +6,7 @@ import { ModalHeader } from "@/srs/components/common/modal-header"
 import { ModalBody } from "@/srs/components/common/modal-body"
 import {ModalFooter} from "@/srs/components/common/modal-footer";
 import {Button} from "@/srs/components/common/button";
-import {DeleteModal} from "@/srs/components/ui-components/modal-component/delete-modal";
+import {DeleteModal} from "@/srs/components/ui-components/modal-component/delete-confirm-modal";
 import {FileUpload_Types} from "@/srs/types/file-upload.types";
 import {FileUploadForm} from "@/srs/components/Forms/DataForms/file-upload-form";
 import {FileUploadPreview} from "@/srs/lib/awsS3Bucket/file-upload-preview";

@@ -36,7 +36,7 @@ export const AssetTypesFields = ({assetTypeName, description, onChange, errors =
                         error={errors?.description}
                         required={true}
                         disabled={false}
-                        rows={4}
+                        rows={6}
                     />
                 </div>
             </div>

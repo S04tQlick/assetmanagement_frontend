@@ -1,50 +1,59 @@
 'use client'
 
 import { useState } from "react"
-import { z } from "zod"
+import { z, ZodObject } from "zod"
 
 type FieldErrors<T> = Partial<Record<keyof T, string>>
 
-export function useZodForm<T extends z.ZodTypeAny, O extends Record<string, any> = z.infer<T> & Record<string, any>>(schema: T, initial: O) {
-    const [form, setForm] = useState<O>(initial)
-    const [errors, setErrors] = useState<FieldErrors<O>>({})
+export function useZodForm<
+    TSchema extends ZodObject<any>,
+    TEntity extends z.infer<TSchema>
+>(
+    schema: TSchema,
+    initial: TEntity
+) {
+    const [form, setForm] = useState<TEntity>(initial)
+    const [errors, setErrors] = useState<FieldErrors<TEntity>>({})
     const [formError, setFormError] = useState<string | null>(null)
 
-    const normalize = (value: any) => {
+    const normalize = (value: unknown) => {
         if (typeof value === "string") return value.trimStart()
         return value
     }
 
-    const updateField = <K extends keyof O>(field: K, value: O[K]) => {
-        const normalized = normalize(value)
+    const updateField = <K extends keyof TEntity>(
+        field: K,
+        value: TEntity[K]
+    ) => {
+        const normalized = normalize(value) as TEntity[K]
 
         setForm(prev => ({
             ...prev,
             [field]: normalized,
         }))
 
-        const shape = (schema as any)?.shape
-        if (shape && shape[field as string]) {
-            const fieldSchema = shape[field as string] as z.ZodTypeAny
+        const fieldSchema = schema.shape[field as string]
+
+        if (fieldSchema) {
             const result = fieldSchema.safeParse(normalized)
 
             if (!result.success) {
                 const issue = result.error.issues[0]
                 setErrors(prev => ({ ...prev, [field]: issue.message }))
             } else {
-                setErrors(prev => ({ ...prev, [field]: "" }))
+                setErrors(prev => ({ ...prev, [field]: undefined }))
             }
         }
     }
 
-    const validateForm = () => {
+    const validateForm = (): TEntity | null => {
         const result = schema.safeParse(form)
 
         if (!result.success) {
-            const fieldErrors: FieldErrors<O> = {}
+            const fieldErrors: FieldErrors<TEntity> = {}
 
             result.error.issues.forEach(issue => {
-                const field = issue.path[0] as keyof O
+                const field = issue.path[0] as keyof TEntity
                 fieldErrors[field] = issue.message
             })
 
@@ -53,7 +62,7 @@ export function useZodForm<T extends z.ZodTypeAny, O extends Record<string, any>
         }
 
         setErrors({})
-        return result.data
+        return result.data as TEntity
     }
 
     return {
@@ -66,6 +75,194 @@ export function useZodForm<T extends z.ZodTypeAny, O extends Record<string, any>
         setForm,
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 'use client'
+//
+// import { useState } from "react"
+// import { z } from "zod"
+//
+// type FieldErrors<T> = Partial<Record<keyof T, string>>
+//
+// export function useZodForm<
+//     TSchema extends z.ZodObject<any>
+// >(
+//     schema: TSchema,
+//     initial: z.infer<TSchema>
+// ) {
+//     type FormValues = z.infer<TSchema>
+//
+//     const [form, setForm] = useState<FormValues>(initial)
+//     const [errors, setErrors] = useState<FieldErrors<FormValues>>({})
+//     const [formError, setFormError] = useState<string | null>(null)
+//
+//     const normalize = (value: unknown) => {
+//         if (typeof value === "string") return value.trimStart()
+//         return value
+//     }
+//
+//     const updateField = <K extends keyof FormValues>(
+//         field: K,
+//         value: FormValues[K]
+//     ) => {
+//         const normalized = normalize(value) as FormValues[K]
+//
+//         setForm(prev => ({
+//             ...prev,
+//             [field]: normalized,
+//         }))
+//
+//         const fieldSchema = schema.shape[field as string]
+//
+//         if (fieldSchema) {
+//             const result = fieldSchema.safeParse(normalized)
+//
+//             if (!result.success) {
+//                 const issue = result.error.issues[0]
+//                 setErrors(prev => ({ ...prev, [field]: issue.message }))
+//             } else {
+//                 setErrors(prev => ({ ...prev, [field]: undefined }))
+//             }
+//         }
+//     }
+//
+//     const validateForm = (): FormValues | null => {
+//         const result = schema.safeParse(form)
+//
+//         if (!result.success) {
+//             const fieldErrors: FieldErrors<FormValues> = {}
+//
+//             result.error.issues.forEach(issue => {
+//                 const field = issue.path[0] as keyof FormValues
+//                 fieldErrors[field] = issue.message
+//             })
+//
+//             setErrors(fieldErrors)
+//             return null
+//         }
+//
+//         setErrors({})
+//         return result.data
+//     }
+//
+//     return {
+//         form,
+//         errors,
+//         formError,
+//         setFormError,
+//         updateField,
+//         validateForm,
+//         setForm,
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 'use client'
+//
+// import { useState } from "react"
+// import { z } from "zod"
+//
+// type FieldErrors<T> = Partial<Record<keyof T, string>>
+//
+// export function useZodForm<T extends z.ZodTypeAny, O extends Record<string, any> = z.infer<T> & Record<string, any>>(schema: T, initial: O) {
+//     const [form, setForm] = useState<O>(initial)
+//     const [errors, setErrors] = useState<FieldErrors<O>>({})
+//     const [formError, setFormError] = useState<string | null>(null)
+//
+//     const normalize = (value: any) => {
+//         if (typeof value === "string") return value.trimStart()
+//         return value
+//     }
+//
+//     const updateField = <K extends keyof O>(field: K, value: O[K]) => {
+//         const normalized = normalize(value)
+//
+//         setForm(prev => ({
+//             ...prev,
+//             [field]: normalized,
+//         }))
+//
+//         const shape = (schema as any)?.shape
+//         if (shape && shape[field as string]) {
+//             const fieldSchema = shape[field as string] as z.ZodTypeAny
+//             const result = fieldSchema.safeParse(normalized)
+//
+//             if (!result.success) {
+//                 const issue = result.error.issues[0]
+//                 setErrors(prev => ({ ...prev, [field]: issue.message }))
+//             } else {
+//                 setErrors(prev => ({ ...prev, [field]: "" }))
+//             }
+//         }
+//     }
+//
+//     const validateForm = () => {
+//         const result = schema.safeParse(form)
+//
+//         if (!result.success) {
+//             const fieldErrors: FieldErrors<O> = {}
+//
+//             result.error.issues.forEach(issue => {
+//                 const field = issue.path[0] as keyof O
+//                 fieldErrors[field] = issue.message
+//             })
+//
+//             setErrors(fieldErrors)
+//             return null
+//         }
+//
+//         setErrors({})
+//         return result.data
+//     }
+//
+//     return {
+//         form,
+//         errors,
+//         formError,
+//         setFormError,
+//         updateField,
+//         validateForm,
+//         setForm,
+//     }
+// }
 
 
 

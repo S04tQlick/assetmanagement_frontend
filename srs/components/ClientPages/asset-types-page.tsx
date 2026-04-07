@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react"; 
-import { Modal } from "@/srs/components/common/modal"; 
-import { ServerDataWarningModal } from "@/srs/components/ui-components/error-component/server-data-error";
-import {PageHeader} from "@/srs/components/ui-components/layout-component/page-header";
-import {AssetTypeForm} from "@/srs/components/Forms/DataForms/asset-type-form";
-import { AssetType_Types } from "@/srs/types/asset-type.types";
-import { AssetTypesList } from "@/srs/components/Forms/ListForms/asset-types-list";
+import React from "react";
+import { AssetTypeForm } from "@/srs/components/Forms/DataForms/asset-type-form";
+import { AssetType_Types } from "@/srs/types/asset-type.types"; 
+import {List} from "@/srs/components/ui-components/form-component/list"; 
+import {CrudPageLayout} from "@/srs/components/ui-components/modal-component/crud-page-layout";
+import {Detail} from "@/srs/components/ui-components/form-component/detail"; 
 
 interface ClientProps {
     assetTypes: AssetType_Types[];
@@ -15,55 +14,40 @@ interface ClientProps {
     slug: string;
 }
 
-export default function AssetTypesClientPage({pageTitle, slug, baseUrl, assetTypes}: ClientProps) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+export default function AssetTypesClientPage(props: ClientProps) {
 
-    if (!assetTypes) { 
-        return (
-            <ServerDataWarningModal 
-                open={true} 
-                title="Data Error !" 
-                message={pageTitle} 
-                retryInterval={5} 
-                onRetry={
-                async () => { 
-                    const res = await fetch(`${baseUrl}/api/${slug}`, { cache: "no-store" }); 
-                    const fresh = await res.json(); 
-                    if (fresh?.assetTypes) { 
-                        window.location.reload(); 
-                        return true; 
-                    } 
-                    return false; 
-                }
-            } 
-            /> 
-        ); 
-    }
-    
     return (
-        <>
-            <PageHeader
-                title={pageTitle}
-                onAdd={() => setIsModalOpen(true)}
-            />
-            
-            {assetTypes.length === 0 ? (
-                <p>No {pageTitle} found.</p>
-            ) : (
-                <AssetTypesList
-                    assetTypes={assetTypes}
-                    pageTitle={pageTitle}
-                    slug={slug}
-                />
+        <CrudPageLayout<AssetType_Types>
+            slug={props.slug}
+            pageTitle={props.pageTitle}
+            initialItems={props.assetTypes}
+            getTitle={(item) => item.assetTypeName}
+
+            ListComponent={({items, onView}) => (
+                <List<AssetType_Types>
+                    items={items}
+                    onView={onView}
+                    getName={(item) => item.assetTypeName}/>
             )}
-            
-            <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} size="md">
+
+            DetailComponent={({item}) => (
+                <Detail<AssetType_Types>
+                    item={item}
+                    fields={["assetTypeName", "description"]}
+                    fieldLabels={{
+                        assetTypeName: "Asset Type",
+                        description: "Description"
+                    }}/>
+            )}
+
+            FormComponent={({initialData, onSuccess, registerSubmit}) => (
                 <AssetTypeForm
-                    pageTitle={pageTitle}
-                    slug={slug}
-                    onSuccess={() => setIsModalOpen(false)}
-                />
-            </Modal>
-        </>
+                    pageTitle={props.pageTitle}
+                    slug={props.slug}
+                    initialData={initialData}
+                    onSuccessAction={onSuccess}
+                    registerSubmitAction={registerSubmit}/>
+            )}
+        />
     );
 }

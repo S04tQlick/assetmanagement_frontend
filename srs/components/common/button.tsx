@@ -35,18 +35,20 @@ interface ButtonProps {
         "reset";
 }
 
-export const Button = ({
-                           children,
-                           onClick,
-                           type = "button",
-                           variant = "primary",
-                           size = "md",
-                           loading = false,
-                           isDisabled = false,
-                           isEdit = false,
-                           pageTitle,
-                           className = "",
-                       }: ButtonProps) => { 
+export const Button = (
+    {
+        children,
+        onClick,
+        type = "button",
+        variant = "primary",
+        size = "md",
+        loading = false,
+        isDisabled = false,
+        isEdit = false,
+        pageTitle,
+        className = "",
+    }: ButtonProps) => {
+    
     const autoLabel = loading
         ? "Saving..."
         : isEdit
