@@ -1,12 +1,10 @@
 "use client"
 
-import { useState } from "react" 
-import { Modal } from "@/srs/components/common/modal"
+import { useState } from "react"
 import {InstitutionsList} from "@/srs/components/Forms/ListForms/institutions-list"; 
 import {Institution_Types} from "@/srs/types/institution.types"; 
 import {ServerDataWarningModal} from "@/srs/components/ui-components/error-component/server-data-error"; 
-import {PageHeader} from "@/srs/components/ui-components/layout-component/page-header";
-import { InstitutionForm } from "../Forms/DataForms/institution-form ";
+import {PageHeader} from "@/srs/components/ui-components/layout-component/page-header"; 
 
 interface ClientProps {
     institutions: Institution_Types[]
@@ -59,14 +57,14 @@ export default function InstitutionsPageClient({pageTitle, slug,logoSlug,baseUrl
                 />
             )}
 
-            <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} size="xl">
-                <InstitutionForm
-                    pageTitle={pageTitle}
-                    slug={slug}
-                    logoSlug={logoSlug}
-                    onSuccess={() => setIsModalOpen(false)}
-                />
-            </Modal>
+            {/*<Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} size="xl">*/}
+            {/*    <InstitutionForm*/}
+            {/*        pageTitle={pageTitle}*/}
+            {/*        slug={slug}*/}
+            {/*        logoSlug={logoSlug}*/}
+            {/*        onSuccess={() => setIsModalOpen(false)}*/}
+            {/*    />*/}
+            {/*</Modal>*/}
         </>
     )
 }

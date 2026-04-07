@@ -8,7 +8,7 @@ import {ModalFooter} from "@/srs/components/common/modal-footer";
 import {Button} from "@/srs/components/common/button";
 import {AssetCategory_Types} from "@/srs/types/asset-category.types";
 import {AssetCategoryForm} from "@/srs/components/Forms/DataForms/asset-category-form";
-import {DeleteModal} from "@/srs/components/ui-components/modal-component/delete-modal"; 
+import {DeleteModal} from "@/srs/components/ui-components/modal-component/delete-confirm-modal"; 
 
 interface Props {
     pageTitle: string

@@ -40,7 +40,7 @@ export const AssetsList = ({ pageTitle, slug, assets }: ListProps) => {
                 ))}
             </ul>
 
-            <Modal open={open} onClose={() => setOpen(false)} size={"md"}>
+            <Modal open={open} onClose={() => setOpen(false)} size={"full"}>
                 {selected && (
                     <AssetDetailClient
                         pageTitle={pageTitle}
@@ -49,7 +49,7 @@ export const AssetsList = ({ pageTitle, slug, assets }: ListProps) => {
                         onClose={() => setOpen(false)}
                     />
                 )}
-            </Modal>
+            </Modal> 
         </>
     )
 }

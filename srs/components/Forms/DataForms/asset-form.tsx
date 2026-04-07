@@ -6,7 +6,7 @@ import { useToastError } from "@/srs/hooks/use-toast-error"
 import { useToastSuccess } from "@/srs/hooks/use-toast-success"
 import { useZodForm } from "@/srs/hooks/use-zod-form"
 import { useDropdowns } from "@/srs/hooks/use-dropdowns"
-import { useCrudForm } from "@/srs/hooks/use-crud-form"
+//import { useCrudForm } from "@/srs/hooks/use-crud-form"
 import { AssetCategory_Types } from "@/srs/types/asset-category.types"
 import { ModalHeader } from "@/srs/components/common/modal-header"
 import { ModalBody } from "@/srs/components/common/modal-body"
@@ -65,11 +65,11 @@ export const AssetForm = ({ pageTitle, slug, initialData, onSuccess }: Props) =>
         nextMaintenanceDate: initialData?.nextMaintenanceDate
             ? new Date(initialData.nextMaintenanceDate).toISOString().split("T")[0]
             : "",
-        institutionId: initialData?.institutions?.id ?? "",
-        branchId: initialData?.branches?.id ?? "",
-        assetCategoryId: initialData?.assetCategories?.id ?? "",
-        assetTypeId: initialData?.assetTypes?.id ?? "",
-        vendorId: initialData?.vendors?.id ?? "",
+        institutionId: initialData?.institutionId ?? "",
+        branchId: initialData?.branchId ?? "",
+        assetCategoryId: initialData?.assetCategoryId ?? "",
+        assetTypeId: initialData?.assetTypeId ?? "",
+        vendorId: initialData?.vendorId ?? "",
     })
 
     const { data: dropdowns, loading: dropdownLoading, error } = useDropdowns(

@@ -6,7 +6,7 @@ import { ModalHeader } from "@/srs/components/common/modal-header"
 import { ModalBody } from "@/srs/components/common/modal-body"
 import {ModalFooter} from "@/srs/components/common/modal-footer";
 import {Button} from "@/srs/components/common/button";
-import {DeleteModal} from "@/srs/components/ui-components/modal-component/delete-modal";
+import {DeleteModal} from "@/srs/components/ui-components/modal-component/delete-confirm-modal";
 import {Vendor_Types} from "@/srs/types/vendor.types";
 import {VendorForm} from "@/srs/components/Forms/DataForms/vendor-form"; 
 

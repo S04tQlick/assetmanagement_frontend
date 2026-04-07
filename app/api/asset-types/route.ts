@@ -37,9 +37,9 @@ export async function POST(req: Request) {
         const result = await clientApi.assetTypes.create(doc)
 
         return jsonOk({
-            users: result,
+            data: result,
             status: 201,
-            message: "User created"
+            message: "Asset type created"
         })
     } catch (error) {
         console.error(`POST /api/assetTypes error:`, error);

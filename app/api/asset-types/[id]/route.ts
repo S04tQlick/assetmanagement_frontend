@@ -25,25 +25,31 @@ export async function GET(req: Request, { params }: RouteParams) {
 export async function PUT(req: Request, { params }: RouteParams) {
     const {id} = await params;
     try {
-        const body = await req.json() as AssetTypesApiResponse;
-        const parsed = assetTypeSchema.safeParse(body);
+        const json = await req.json() as AssetTypesApiResponse
+        const parsed = assetTypeSchema.safeParse(json)
 
         if (!parsed.success) {
-            const errors = formatZodErrors(parsed.error);
+            const errors = formatZodErrors(parsed.error)
             return jsonError("Validation failed", 400, {errors});
         }
 
-        const data = parsed.data;
+        const data = parsed.data
+
         const doc = {
             ...data,
-        };
+        }
 
-        const result = await clientApi.assetTypes.update(id, doc);
+        const result = await clientApi.assetTypes.update(id, doc)
 
-        return jsonOk(result, "Asset type updated", 200);
+        return jsonOk({
+            data: result,
+            status: 201,
+            message: "Asset type updated"
+        })
+
     } catch (error) {
-        console.error(`PUT /api/asset-types/[id] error:`, error);
-        return jsonError("Failed to update asset type.", 500);
+        console.error(`POST /api/assetTypes/[id] error:`, error);
+        return jsonError("Failed to update assetType.", 500);
     }
 }
 
